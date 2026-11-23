@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 20: رادار كشف الأجسام ثنائي الأبعاد — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#f5a524">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">20</span>رادار كشف الأجسام ثنائي الأبعاد</h1>
+ <div class="en">Ultrasonic Radar</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتوسط</span> &nbsp; صفحة 61 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">حساس يدور على سيرفو ويرسل الزاوية والمسافة إلى الحاسوب الذي يرسم شاشة رادار حقيقية.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">حساس المسافة<i>HC-SR04</i></span><span class="chip">سيرفو الرادار<i>Servo SG90</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 20" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>حساس المسافة</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>Trig</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>Echo</td><td><b class='pin' dir='ltr'>D11</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>سيرفو الرادار</td><td>إشارة (برتقالي)</td><td><b class='pin' dir='ltr'>D12</b> <span></span></td></tr><tr><td>سيرفو الرادار</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو الرادار</td><td>GND (بني)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/20_ultrasonic_radar.ino" download>⬇ تحميل 20_ultrasonic_radar.ino</a><a class="btn ghost" href="files/radar_display.pde" download>⬇ radar_display.pde</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>Servo (مدمجة مع Arduino IDE)</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتوسط — المشروع 5: رادار كشف الأجسام (Ultrasonic Radar)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل:</span>
+<span class="c">    HC-SR04: VCC → 5V   GND → GND   Trig → Pin 10   Echo → Pin 11</span>
+<span class="c">    Servo:   أحمر → 5V   بني → GND   إشارة → Pin 12</span>
+<span class="c">  يرسل الأردوينو &quot;الزاوية,المسافة.&quot; عبر المنفذ التسلسلي (9600).</span>
+<span class="c">  شاشة الرادار: شغّل الملف radar_display.pde في برنامج Processing</span>
+<span class="c">  (غيّر رقم المنفذ COM داخل الملف).</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Servo.h&gt;
+
+<span class="k">const</span> <span class="k">int</span> TRIG_PIN = <span class="n">10</span>, ECHO_PIN = <span class="n">11</span>, SERVO_PIN = <span class="n">12</span>;
+Servo radarServo;
+
+<span class="k">int</span> <span class="f">distanceCm</span>() {
+  <span class="f">digitalWrite</span>(TRIG_PIN, LOW);  <span class="f">delayMicroseconds</span>(<span class="n">2</span>);
+  <span class="f">digitalWrite</span>(TRIG_PIN, HIGH); <span class="f">delayMicroseconds</span>(<span class="n">10</span>);
+  <span class="f">digitalWrite</span>(TRIG_PIN, LOW);
+  <span class="k">long</span> t = <span class="f">pulseIn</span>(ECHO_PIN, HIGH, <span class="n">30000</span>);
+  <span class="k">return</span> t == <span class="n">0</span> ? <span class="n">0</span> : t * <span class="n">0.034</span> / <span class="n">2</span>;
+}
+
+<span class="k">void</span> <span class="f">sendReading</span>(<span class="k">int</span> angle) {
+  radarServo.<span class="f">write</span>(angle);
+  <span class="f">delay</span>(<span class="n">30</span>);                          <span class="c">// استقرار المحرك قبل القياس</span>
+  <span class="k">int</span> d = <span class="f">distanceCm</span>();
+  Serial.<span class="f">print</span>(angle);
+  Serial.<span class="f">print</span>(<span class="s">&quot;,&quot;</span>);
+  Serial.<span class="f">print</span>(d);
+  Serial.<span class="f">print</span>(<span class="s">&quot;.&quot;</span>);                  <span class="c">// الفاصلة تفصل القيم والنقطة تنهي القراءة</span>
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">9600</span>);
+  <span class="f">pinMode</span>(TRIG_PIN, OUTPUT);
+  <span class="f">pinMode</span>(ECHO_PIN, INPUT);
+  radarServo.<span class="f">attach</span>(SERVO_PIN);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">for</span> (<span class="k">int</span> a = <span class="n">15</span>; a &lt;= <span class="n">165</span>; a++) <span class="f">sendReading</span>(a);
+  <span class="k">for</span> (<span class="k">int</span> a = <span class="n">165</span>; a &gt;= <span class="n">15</span>; a--) <span class="f">sendReading</span>(a);
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>السيرفو يدور من 15° إلى 165°</li><li>عند كل زاوية يُقاس البعد</li><li>يُرسل &quot;الزاوية,المسافة.&quot; عبر Serial</li><li>برنامج Processing يرسم الرادار</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../19/">→ المشروع 19</a><a class="btn ghost" href="../21/">المشروع 21 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 18: سيارة تجنب العقبات — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#f5a524">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">18</span>سيارة تجنب العقبات</h1>
+ <div class="en">Obstacle Avoiding Robot</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتوسط</span> &nbsp; صفحة 55 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">السيارة تتقدم، وعند وجود عائق تلتفت بالحساس يميناً ويساراً وتختار الطريق الأوسع.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">حساس المسافة<i>HC-SR04</i></span><span class="chip">سيرفو الحساس<i>Servo SG90</i></span><span class="chip">مشغل المحركات<i>L298N</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 18" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>حساس المسافة</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>Trig</td><td><b class='pin' dir='ltr'>D11</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>Echo</td><td><b class='pin' dir='ltr'>D12</b> <span></span></td></tr><tr><td>حساس المسافة</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>سيرفو الحساس</td><td>إشارة (برتقالي)</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>سيرفو الحساس</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو الحساس</td><td>GND (بني)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN1</td><td><b class='pin' dir='ltr'>D6</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN2</td><td><b class='pin' dir='ltr'>D7</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN3</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN4</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>12V</td><td><span>موجب البطارية 7.4V</span></td></tr><tr><td>مشغل المحركات</td><td>OUT1/OUT2</td><td><span>المحرك الأيمن</span></td></tr><tr><td>مشغل المحركات</td><td>OUT3/OUT4</td><td><span>المحرك الأيسر</span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/18_obstacle_avoider.ino" download>⬇ تحميل 18_obstacle_avoider.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>Servo (مدمجة مع Arduino IDE)</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتوسط — المشروع 3: سيارة تجنب العقبات (Obstacle Avoiding Robot)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل:</span>
+<span class="c">    HC-SR04: VCC → 5V   Trig → Pin 11   Echo → Pin 12   GND → GND</span>
+<span class="c">             (مثبّت فوق ذراع السيرفو)</span>
+<span class="c">    Servo:   إشارة → Pin 10   أحمر → 5V   بني → GND</span>
+<span class="c">    L298N:   IN1 → 6   IN2 → 7   IN3 → 8   IN4 → 9  (كما في سيارة تتبع الخط)</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Servo.h&gt;
+
+<span class="k">const</span> <span class="k">int</span> TRIG_PIN = <span class="n">11</span>, ECHO_PIN = <span class="n">12</span>, SERVO_PIN = <span class="n">10</span>;
+<span class="k">const</span> <span class="k">int</span> IN1 = <span class="n">6</span>, IN2 = <span class="n">7</span>, IN3 = <span class="n">8</span>, IN4 = <span class="n">9</span>;
+<span class="k">const</span> <span class="k">int</span> SAFE_CM = <span class="n">25</span>;
+
+Servo head;
+
+<span class="k">void</span> <span class="f">motors</span>(<span class="k">int</span> r, <span class="k">int</span> l) {
+  <span class="f">digitalWrite</span>(IN1, r == <span class="n">1</span>);  <span class="f">digitalWrite</span>(IN2, r == -<span class="n">1</span>);
+  <span class="f">digitalWrite</span>(IN3, l == <span class="n">1</span>);  <span class="f">digitalWrite</span>(IN4, l == -<span class="n">1</span>);
+}
+<span class="k">void</span> <span class="f">forward</span>()  { <span class="f">motors</span>(<span class="n">1</span>, <span class="n">1</span>); }
+<span class="k">void</span> <span class="f">backward</span>() { <span class="f">motors</span>(-<span class="n">1</span>, -<span class="n">1</span>); }
+<span class="k">void</span> <span class="f">turnRight</span>(){ <span class="f">motors</span>(-<span class="n">1</span>, <span class="n">1</span>); }
+<span class="k">void</span> <span class="f">turnLeft</span>() { <span class="f">motors</span>(<span class="n">1</span>, -<span class="n">1</span>); }
+<span class="k">void</span> <span class="f">stopCar</span>()  { <span class="f">motors</span>(<span class="n">0</span>, <span class="n">0</span>); }
+
+<span class="k">int</span> <span class="f">distanceCm</span>() {
+  <span class="f">digitalWrite</span>(TRIG_PIN, LOW);  <span class="f">delayMicroseconds</span>(<span class="n">2</span>);
+  <span class="f">digitalWrite</span>(TRIG_PIN, HIGH); <span class="f">delayMicroseconds</span>(<span class="n">10</span>);
+  <span class="f">digitalWrite</span>(TRIG_PIN, LOW);
+  <span class="k">long</span> t = <span class="f">pulseIn</span>(ECHO_PIN, HIGH, <span class="n">30000</span>);
+  <span class="k">return</span> t == <span class="n">0</span> ? <span class="n">400</span> : t * <span class="n">0.034</span> / <span class="n">2</span>;
+}
+
+<span class="k">int</span> <span class="f">lookAt</span>(<span class="k">int</span> angle) {        <span class="c">// يدير الحساس ويقيس المسافة</span>
+  head.<span class="f">write</span>(angle);
+  <span class="f">delay</span>(<span class="n">400</span>);
+  <span class="k">int</span> d = <span class="f">distanceCm</span>();
+  <span class="k">return</span> d;
+}
+<span class="k">int</span> <span class="f">lookRight</span>() { <span class="k">return</span> <span class="f">lookAt</span>(<span class="n">20</span>);  }
+<span class="k">int</span> <span class="f">lookLeft</span>()  { <span class="k">return</span> <span class="f">lookAt</span>(<span class="n">160</span>); }
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  <span class="f">pinMode</span>(TRIG_PIN, OUTPUT); <span class="f">pinMode</span>(ECHO_PIN, INPUT);
+  <span class="f">pinMode</span>(IN1, OUTPUT); <span class="f">pinMode</span>(IN2, OUTPUT);
+  <span class="f">pinMode</span>(IN3, OUTPUT); <span class="f">pinMode</span>(IN4, OUTPUT);
+  head.<span class="f">attach</span>(SERVO_PIN);
+  head.<span class="f">write</span>(<span class="n">90</span>);              <span class="c">// الحساس للأمام</span>
+  <span class="f">delay</span>(<span class="n">1000</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">if</span> (<span class="f">distanceCm</span>() &gt; SAFE_CM) {
+    <span class="f">forward</span>();
+    <span class="f">delay</span>(<span class="n">50</span>);
+    <span class="k">return</span>;
+  }
+  <span class="c">// عائق أمامي</span>
+  <span class="f">stopCar</span>();
+  <span class="f">delay</span>(<span class="n">200</span>);
+  <span class="k">int</span> right = <span class="f">lookRight</span>();
+  <span class="k">int</span> left  = <span class="f">lookLeft</span>();
+  head.<span class="f">write</span>(<span class="n">90</span>);
+  <span class="f">delay</span>(<span class="n">300</span>);
+
+  <span class="k">if</span> (right &lt; SAFE_CM &amp;&amp; left &lt; SAFE_CM) {   <span class="c">// الطريقان مغلقان</span>
+    <span class="f">backward</span>(); <span class="f">delay</span>(<span class="n">500</span>);
+    <span class="f">turnRight</span>(); <span class="f">delay</span>(<span class="n">700</span>);                 <span class="c">// التفاف للخلف تقريباً</span>
+  } <span class="k">else</span> <span class="k">if</span> (right &gt;= left) {
+    <span class="f">turnRight</span>(); <span class="f">delay</span>(<span class="n">400</span>);
+  } <span class="k">else</span> {
+    <span class="f">turnLeft</span>();  <span class="f">delay</span>(<span class="n">400</span>);
+  }
+  <span class="f">stopCar</span>();
+  <span class="f">delay</span>(<span class="n">100</span>);
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>مسافة أكبر من 25 سم → للأمام</li><li>عائق → توقف</li><li>السيرفو يدير الحساس لقياس اليمين واليسار</li><li>يختار الاتجاه الأكثر خلوّاً</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../17/">→ المشروع 17</a><a class="btn ghost" href="../19/">المشروع 19 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

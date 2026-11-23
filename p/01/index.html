@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 1: التحكم بإضاءة LED — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">1</span>التحكم بإضاءة LED</h1>
+ <div class="en">LED Blink</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 2 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">أول مشروع لكل مبتدئ: نجعل الأردوينو يشغّل مصباح LED ويطفئه كل ثانية.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">مصباح LED أحمر<i>LED</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 1" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>مصباح LED أحمر</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>D13</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>مصباح LED أحمر</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/01_led_blink.ino" download>⬇ تحميل 01_led_blink.ino</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 1: التحكم بإضاءة LED (Blink)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل:</span>
+<span class="c">    - الطرف الطويل (+) للـ LED  ← مقاومة 220Ω ← Pin 13</span>
+<span class="c">    - الطرف القصير (−) للـ LED  ← GND</span>
+<span class="c">*/</span>
+
+<span class="k">const</span> <span class="k">int</span> LED_PIN = <span class="n">13</span>;      <span class="c">// المنفذ المتصل بالـ LED</span>
+<span class="k">const</span> <span class="k">int</span> WAIT_MS = <span class="n">1000</span>;    <span class="c">// مدة الانتظار بالملي ثانية (1000 = ثانية واحدة)</span>
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  <span class="f">pinMode</span>(LED_PIN, OUTPUT);  <span class="c">// نجعل المنفذ مخرجاً</span>
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="f">digitalWrite</span>(LED_PIN, HIGH);  <span class="c">// تشغيل الـ LED (5 فولت)</span>
+  <span class="f">delay</span>(WAIT_MS);               <span class="c">// انتظار ثانية</span>
+  <span class="f">digitalWrite</span>(LED_PIN, LOW);   <span class="c">// إطفاء الـ LED (0 فولت)</span>
+  <span class="f">delay</span>(WAIT_MS);               <span class="c">// انتظار ثانية ثم التكرار</span>
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>الأردوينو يرسل HIGH (5V) إلى المنفذ 13 فيضيء الـ LED</li><li>ينتظر ثانية واحدة</li><li>يرسل LOW (0V) فينطفئ الـ LED</li><li>ينتظر ثانية ثم يكرر إلى ما لا نهاية</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><span></span><a class="btn ghost" href="../02/">المشروع 2 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

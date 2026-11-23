@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 4: ساعة رقمية مبسطة (عدّاد 7-Segment) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">4</span>ساعة رقمية مبسطة (عدّاد 7-Segment)</h1>
+ <div class="en">7-Segment Counter</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 11 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">نعرض الأرقام من 0 إلى 9 على شاشة السبع قطع، رقماً كل ثانية.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">شاشة 7-Segment<i>Common Cathode</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 4" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>شاشة 7-Segment</td><td>a</td><td><b class='pin' dir='ltr'>D2</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>b</td><td><b class='pin' dir='ltr'>D3</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>c</td><td><b class='pin' dir='ltr'>D4</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>d</td><td><b class='pin' dir='ltr'>D5</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>e</td><td><b class='pin' dir='ltr'>D6</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>f</td><td><b class='pin' dir='ltr'>D7</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>g</td><td><b class='pin' dir='ltr'>D8</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>شاشة 7-Segment</td><td>COM</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/04_seven_segment_counter.ino" download>⬇ تحميل 04_seven_segment_counter.ino</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 4: ساعة رقمية مبسطة (7-Segment Display)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  شاشة ذات رقم واحد من نوع Common Cathode (الكاثود المشترك):</span>
+<span class="c">    a → Pin 2   b → Pin 3   c → Pin 4   d → Pin 5</span>
+<span class="c">    e → Pin 6   f → Pin 7   g → Pin 8</span>
+<span class="c">    (كل قطعة عبر مقاومة 220Ω) — الطرف المشترك COM ← GND</span>
+<span class="c">  إذا كانت شاشتك Common Anode: صِل COM بـ 5V وغيّر COMMON_ANODE إلى true.</span>
+<span class="c">*/</span>
+
+<span class="k">const</span> <span class="k">bool</span> COMMON_ANODE = <span class="k">false</span>;
+<span class="k">const</span> <span class="k">int</span> segPins[<span class="n">7</span>] = {<span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>, <span class="n">7</span>, <span class="n">8</span>};   <span class="c">// a b c d e f g</span>
+
+<span class="c">// كل صف يمثل رقماً من 0 إلى 9 (1 = القطعة مضيئة)</span>
+<span class="k">const</span> <span class="k">byte</span> digits[<span class="n">10</span>][<span class="n">7</span>] = {
+  <span class="c">//a b c d e f g</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>},  <span class="c">// 0</span>
+  {<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>},  <span class="c">// 1</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>},  <span class="c">// 2</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">1</span>},  <span class="c">// 3</span>
+  {<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>},  <span class="c">// 4</span>
+  {<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>},  <span class="c">// 5</span>
+  {<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>},  <span class="c">// 6</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>},  <span class="c">// 7</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>},  <span class="c">// 8</span>
+  {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>}   <span class="c">// 9</span>
+};
+
+<span class="k">void</span> <span class="f">showDigit</span>(<span class="k">int</span> n) {
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">7</span>; i++) {
+    <span class="k">bool</span> on = digits[n][i];
+    <span class="k">if</span> (COMMON_ANODE) on = !on;          <span class="c">// عكس المنطق للأنود المشترك</span>
+    <span class="f">digitalWrite</span>(segPins[i], on ? HIGH : LOW);
+  }
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">7</span>; i++) <span class="f">pinMode</span>(segPins[i], OUTPUT);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">for</span> (<span class="k">int</span> n = <span class="n">0</span>; n &lt;= <span class="n">9</span>; n++) {   <span class="c">// عدّاد من 0 إلى 9</span>
+    <span class="f">showDigit</span>(n);
+    <span class="f">delay</span>(<span class="n">1000</span>);                   <span class="c">// ثانية لكل رقم</span>
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>كل رقم مخزن كصف في مصفوفة من 7 قيم</li><li>الدالة showDigit() تشغّل القطع المطلوبة</li><li>العدّاد يزيد كل ثانية</li><li>بعد 9 يعود إلى 0</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../03/">→ المشروع 3</a><a class="btn ghost" href="../05/">المشروع 5 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 38: الطابعة ثلاثية الأبعاد المصغرة — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#ef4444">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">38</span>الطابعة ثلاثية الأبعاد المصغرة</h1>
+ <div class="en">DIY Cartesian 3D Printer</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 112 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">طابعة ديكارتية على Arduino Mega و RAMPS 1.4: برنامج اختبار لكل الأجزاء، ثم إعدادات Marlin.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO MEGA + RAMPS 1.4<i>board</i></span><span class="chip">محرك X<i>NEMA17</i></span><span class="chip">محرك Y<i>NEMA17</i></span><span class="chip">محركا Z (على التوازي)<i>NEMA17 ×2</i></span><span class="chip">محرك البثق<i>Extruder</i></span><span class="chip">رأس الطباعة<i>Hotend</i></span><span class="chip">المنصة الساخنة<i>Heatbed</i></span><span class="chip">مفاتيح النهاية<i>Endstops</i></span><span class="chip">مزود الطاقة<i>12V 20A</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 38" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>محرك X</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>X</b> <span></span></td></tr><tr><td>محرك Y</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>Y</b> <span></span></td></tr><tr><td>محركا Z (على التوازي)</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>Z</b> <span></span></td></tr><tr><td>محرك البثق</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>E0</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>السخان</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>الثرمستور</td><td><b class='pin' dir='ltr'>T0</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>المروحة</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>المنصة الساخنة</td><td>السخان</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>المنصة الساخنة</td><td>الثرمستور</td><td><b class='pin' dir='ltr'>T1</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>X</td><td><b class='pin' dir='ltr'>X-MIN</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>Y</td><td><b class='pin' dir='ltr'>Y-MIN</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>Z</td><td><b class='pin' dir='ltr'>Z-MIN</b> <span></span></td></tr><tr><td>مزود الطاقة</td><td>+</td><td><b class='pin' dir='ltr'>12V</b> <span></span></td></tr><tr><td>مزود الطاقة</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/38_ramps_test.ino" download>⬇ تحميل 38_ramps_test.ino</a><a class="btn ghost" href="files/marlin_settings.txt" download>⬇ marlin_settings.txt</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتطور — المشروع 8: الطابعة ثلاثية الأبعاد المصغرة (Arduino Mega + RAMPS 1.4)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  هذا &quot;برنامج اختبار&quot; لفحص كل أجزاء الطابعة قبل رفع البرنامج الثابت Marlin:</span>
+<span class="c">  يحرّك كل محرك، ويقرأ الحساسات الحرارية ومفاتيح النهاية، ويختبر المراوح.</span>
+<span class="c">  (إعدادات Marlin الأساسية في ملف marlin_settings.txt المرفق)</span>
+<span class="c"></span>
+<span class="c">  منافذ RAMPS 1.4 القياسية (لا تحتاج توصيل أسلاك — كلها على اللوحة):</span>
+<span class="c">    X: STEP 54(A0) DIR 55(A1) EN 38     Y: STEP 60(A6) DIR 61(A7) EN 56(A2)</span>
+<span class="c">    Z: STEP 46 DIR 48 EN 62(A8)         E0: STEP 26 DIR 28 EN 24</span>
+<span class="c">    الحساس الحراري T0 (الرأس) → A13     T1 (المنصة) → A14</span>
+<span class="c">    مخرج سخان الرأس D10 ، مروحة D9 ، سخان المنصة D8</span>
+<span class="c">    مفاتيح النهاية: X_MIN → 3   Y_MIN → 14   Z_MIN → 18</span>
+<span class="c">  ⚠ اختبار السخانات معطّل افتراضياً. لا تترك الطابعة تسخن دون مراقبة.</span>
+<span class="c">*/</span>
+
+<span class="k">struct</span> Axis { <span class="k">const</span> <span class="k">char</span>* name; <span class="k">int</span> step, dir, en; };
+Axis axes[] = {
+  {<span class="s">&quot;X&quot;</span>, <span class="n">54</span>, <span class="n">55</span>, <span class="n">38</span>}, {<span class="s">&quot;Y&quot;</span>, <span class="n">60</span>, <span class="n">61</span>, <span class="n">56</span>}, {<span class="s">&quot;Z&quot;</span>, <span class="n">46</span>, <span class="n">48</span>, <span class="n">62</span>}, {<span class="s">&quot;E0&quot;</span>, <span class="n">26</span>, <span class="n">28</span>, <span class="n">24</span>}
+};
+<span class="k">const</span> <span class="k">int</span> X_MIN = <span class="n">3</span>, Y_MIN = <span class="n">14</span>, Z_MIN = <span class="n">18</span>;
+<span class="k">const</span> <span class="k">int</span> FAN = <span class="n">9</span>, HOTEND = <span class="n">10</span>, BED = <span class="n">8</span>;
+<span class="k">const</span> <span class="k">int</span> T0 = A13, T1 = A14;
+<span class="k">const</span> <span class="k">bool</span> TEST_HEATERS = <span class="k">false</span>;
+
+<span class="c">// تحويل قراءة ثرمستور 100k (NTC 3950) مع مقاومة 4.7k إلى درجة مئوية</span>
+<span class="k">float</span> <span class="f">thermistorC</span>(<span class="k">int</span> pin) {
+  <span class="k">float</span> raw = <span class="f">analogRead</span>(pin);
+  <span class="k">if</span> (raw &lt;= <span class="n">1</span> || raw &gt;= <span class="n">1022</span>) <span class="k">return</span> -<span class="n">999</span>;           <span class="c">// غير موصول</span>
+  <span class="k">float</span> r = <span class="n">4700.0</span> * raw / (<span class="n">1023.0</span> - raw);
+  <span class="k">float</span> t = <span class="n">1.0</span> / (<span class="f">log</span>(r / <span class="n">100000.0</span>) / <span class="n">3950.0</span> + <span class="n">1.0</span> / <span class="n">298.15</span>) - <span class="n">273.15</span>;
+  <span class="k">return</span> t;
+}
+
+<span class="k">void</span> <span class="f">moveAxis</span>(Axis a, <span class="k">long</span> steps, <span class="k">bool</span> dir) {
+  <span class="f">digitalWrite</span>(a.en, LOW);
+  <span class="f">digitalWrite</span>(a.dir, dir);
+  <span class="k">for</span> (<span class="k">long</span> i = <span class="n">0</span>; i &lt; steps; i++) {
+    <span class="f">digitalWrite</span>(a.step, HIGH); <span class="f">delayMicroseconds</span>(<span class="n">500</span>);
+    <span class="f">digitalWrite</span>(a.step, LOW);  <span class="f">delayMicroseconds</span>(<span class="n">500</span>);
+  }
+  <span class="f">digitalWrite</span>(a.en, HIGH);
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">115200</span>);
+  <span class="k">for</span> (Axis a : axes) {
+    <span class="f">pinMode</span>(a.step, OUTPUT); <span class="f">pinMode</span>(a.dir, OUTPUT); <span class="f">pinMode</span>(a.en, OUTPUT);
+    <span class="f">digitalWrite</span>(a.en, HIGH);
+  }
+  <span class="f">pinMode</span>(X_MIN, INPUT_PULLUP); <span class="f">pinMode</span>(Y_MIN, INPUT_PULLUP); <span class="f">pinMode</span>(Z_MIN, INPUT_PULLUP);
+  <span class="f">pinMode</span>(FAN, OUTPUT); <span class="f">pinMode</span>(HOTEND, OUTPUT); <span class="f">pinMode</span>(BED, OUTPUT);
+  <span class="f">digitalWrite</span>(HOTEND, LOW); <span class="f">digitalWrite</span>(BED, LOW);
+
+  Serial.<span class="f">println</span>(<span class="s">&quot;== RAMPS 1.4 test ==&quot;</span>);
+  <span class="k">for</span> (Axis a : axes) {                                <span class="c">// كل محرك يدور ذهاباً وإياباً</span>
+    Serial.<span class="f">print</span>(<span class="s">&quot;Moving &quot;</span>); Serial.<span class="f">println</span>(a.name);
+    <span class="f">moveAxis</span>(a, <span class="n">1600</span>, HIGH);
+    <span class="f">moveAxis</span>(a, <span class="n">1600</span>, LOW);
+  }
+  Serial.<span class="f">println</span>(<span class="s">&quot;Fan test 3 s&quot;</span>);
+  <span class="f">digitalWrite</span>(FAN, HIGH); <span class="f">delay</span>(<span class="n">3000</span>); <span class="f">digitalWrite</span>(FAN, LOW);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  Serial.<span class="f">print</span>(<span class="s">&quot;Hotend: &quot;</span>); Serial.<span class="f">print</span>(<span class="f">thermistorC</span>(T0), <span class="n">1</span>);
+  Serial.<span class="f">print</span>(<span class="s">&quot; C | Bed: &quot;</span>); Serial.<span class="f">print</span>(<span class="f">thermistorC</span>(T1), <span class="n">1</span>);
+  Serial.<span class="f">print</span>(<span class="s">&quot; C | Endstops X:&quot;</span>); Serial.<span class="f">print</span>(!<span class="f">digitalRead</span>(X_MIN));
+  Serial.<span class="f">print</span>(<span class="s">&quot; Y:&quot;</span>); Serial.<span class="f">print</span>(!<span class="f">digitalRead</span>(Y_MIN));
+  Serial.<span class="f">print</span>(<span class="s">&quot; Z:&quot;</span>); Serial.<span class="f">println</span>(!<span class="f">digitalRead</span>(Z_MIN));
+
+  <span class="k">if</span> (TEST_HEATERS) {                                  <span class="c">// تسخين محدود إلى 50°C فقط</span>
+    <span class="k">float</span> t = <span class="f">thermistorC</span>(T0);
+    <span class="f">digitalWrite</span>(HOTEND, (t &gt; -<span class="n">100</span> &amp;&amp; t &lt; <span class="n">50</span>) ? HIGH : LOW);
+  }
+  <span class="f">delay</span>(<span class="n">1000</span>);
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>برنامج الاختبار يحرك X و Y و Z والبثق</li><li>يقرأ حرارة الرأس والمنصة</li><li>يفحص مفاتيح النهاية والمروحة</li><li>بعدها ارفع Marlin بالإعدادات المرفقة</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../37/">→ المشروع 37</a><span></span></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

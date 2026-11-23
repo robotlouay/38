@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 31: نظام إدارة وتوزيع السوائل الصناعي الذكي — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#ef4444">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">31</span>نظام إدارة وتوزيع السوائل الصناعي الذكي</h1>
+ <div class="en">Smart Liquid Management (ESP32)</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 98 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">ESP32 يراقب مستوى خزان الآلة ويعيد تعبئته من الخزان الرئيسي، مع حماية المضخة من العمل على الفراغ.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ESP32 DevKit<i>board</i></span><span class="chip">حساس مستوى الماء<i>Water Level</i></span><span class="chip">حساس التدفق<i>YF-S201</i></span><span class="chip">ريلاي المضخة<i>Relay 1</i></span><span class="chip">ريلاي الصمام<i>Relay 2</i></span><span class="chip">شاشة LCD 16x2<i>LCD I2C</i></span><span class="chip">البازر (الطنان)<i>Buzzer</i></span><span class="chip">LED أخضر<i>LED</i></span><span class="chip">LED أحمر<i>LED</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 31" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>حساس مستوى الماء</td><td>S</td><td><b class='pin' dir='ltr'>34</b> <span></span></td></tr><tr><td>حساس مستوى الماء</td><td>+</td><td><b class='pin' dir='ltr'>3V3</b> <span></span></td></tr><tr><td>حساس مستوى الماء</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>حساس التدفق</td><td>إشارة (أصفر)</td><td><b class='pin' dir='ltr'>27</b> <span></span></td></tr><tr><td>حساس التدفق</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>حساس التدفق</td><td>GND (أسود)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>ريلاي المضخة</td><td>IN</td><td><b class='pin' dir='ltr'>26</b> <span></span></td></tr><tr><td>ريلاي المضخة</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>ريلاي المضخة</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>ريلاي الصمام</td><td>IN</td><td><b class='pin' dir='ltr'>25</b> <span></span></td></tr><tr><td>ريلاي الصمام</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>ريلاي الصمام</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>SDA</td><td><b class='pin' dir='ltr'>21</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>SCL</td><td><b class='pin' dir='ltr'>22</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>البازر (الطنان)</td><td>+</td><td><b class='pin' dir='ltr'>4</b> <span></span></td></tr><tr><td>البازر (الطنان)</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>LED أخضر</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>18</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>LED أخضر</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>LED أحمر</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>19</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>LED أحمر</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/31_liquid_management_esp32.ino" download>⬇ تحميل 31_liquid_management_esp32.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>LiquidCrystal I2C — Frank de Brabander</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتطور — المشروع 1: نظام إدارة وتوزيع السوائل الصناعي الذكي (ESP32)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التجهيز: لوحات ESP32 في Arduino IDE (Boards Manager → esp32) + مكتبة LiquidCrystal I2C</span>
+<span class="c">  التوصيل:</span>
+<span class="c">    حساس مستوى الماء (خزان الآلة) S → GPIO34  ، + → 3.3V ، − → GND</span>
+<span class="c">    حساس التدفق YF-S201: الأصفر → GPIO27 ، الأحمر → 5V ، الأسود → GND</span>
+<span class="c">    ريلاي 1 (المضخة)            IN → GPIO26</span>
+<span class="c">    ريلاي 2 (الصمام المغناطيسي)  IN → GPIO25</span>
+<span class="c">    Buzzer (+) → GPIO4</span>
+<span class="c">    LED أخضر ← 220Ω ← GPIO18      LED أحمر ← 220Ω ← GPIO19</span>
+<span class="c">    LCD I2C: SDA → GPIO21   SCL → GPIO22   VCC → 5V   GND → GND</span>
+<span class="c">    التغذية: بطارية 7.4V → منظم 5V → VIN للـ ESP32 والريلاي ، والمضخة من البطارية عبر الريلاي</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Wire.h&gt;
+<span class="k">#include</span> &lt;LiquidCrystal_I2C.h&gt;
+
+<span class="k">const</span> <span class="k">int</span> LEVEL_PIN = <span class="n">34</span>, FLOW_PIN = <span class="n">27</span>;
+<span class="k">const</span> <span class="k">int</span> PUMP_RELAY = <span class="n">26</span>, VALVE_RELAY = <span class="n">25</span>;
+<span class="k">const</span> <span class="k">int</span> BUZZER_PIN = <span class="n">4</span>, GREEN_LED = <span class="n">18</span>, RED_LED = <span class="n">19</span>;
+
+<span class="c">// معايرة مستوى الخزان (قراءات ESP32 من 0 إلى 4095)</span>
+<span class="k">const</span> <span class="k">int</span> LEVEL_EMPTY = <span class="n">300</span>;    <span class="c">// قراءة الخزان فارغاً</span>
+<span class="k">const</span> <span class="k">int</span> LEVEL_FULL  = <span class="n">2600</span>;   <span class="c">// قراءة الخزان ممتلئاً</span>
+<span class="k">const</span> <span class="k">int</span> START_FILL  = <span class="n">30</span>;     <span class="c">// % ← بدء التعبئة</span>
+<span class="k">const</span> <span class="k">int</span> STOP_FILL   = <span class="n">90</span>;     <span class="c">// % ← إيقاف التعبئة</span>
+<span class="k">const</span> <span class="k">int</span> CRITICAL    = <span class="n">10</span>;     <span class="c">// % ← إنذار نقص حرج</span>
+<span class="k">const</span> <span class="k">unsigned</span> <span class="k">long</span> DRY_RUN_MS = <span class="n">15000</span>;   <span class="c">// المضخة تعمل بلا تدفق = خزان رئيسي فارغ</span>
+
+LiquidCrystal_I2C <span class="f">lcd</span>(0x27, <span class="n">16</span>, <span class="n">2</span>);
+<span class="k">volatile</span> <span class="k">unsigned</span> <span class="k">long</span> pulses = <span class="n">0</span>;
+<span class="k">bool</span> filling = <span class="k">false</span>, fault = <span class="k">false</span>;
+<span class="k">unsigned</span> <span class="k">long</span> fillStart = <span class="n">0</span>, lastCalc = <span class="n">0</span>;
+<span class="k">float</span> flowLmin = <span class="n">0</span>;
+
+<span class="k">void</span> IRAM_ATTR <span class="f">onFlowPulse</span>() { pulses++; }
+
+<span class="k">int</span> <span class="f">levelPercent</span>() {
+  <span class="k">long</span> sum = <span class="n">0</span>;
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">20</span>; i++) sum += <span class="f">analogRead</span>(LEVEL_PIN);
+  <span class="k">int</span> raw = sum / <span class="n">20</span>;
+  <span class="k">return</span> <span class="f">constrain</span>(<span class="f">map</span>(raw, LEVEL_EMPTY, LEVEL_FULL, <span class="n">0</span>, <span class="n">100</span>), <span class="n">0</span>, <span class="n">100</span>);
+}
+
+<span class="k">void</span> <span class="f">setFilling</span>(<span class="k">bool</span> on) {
+  filling = on;
+  <span class="f">digitalWrite</span>(PUMP_RELAY, on);
+  <span class="f">digitalWrite</span>(VALVE_RELAY, on);
+  <span class="k">if</span> (on) fillStart = <span class="f">millis</span>();
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">115200</span>);
+  <span class="f">pinMode</span>(PUMP_RELAY, OUTPUT);  <span class="f">pinMode</span>(VALVE_RELAY, OUTPUT);
+  <span class="f">pinMode</span>(BUZZER_PIN, OUTPUT);  <span class="f">pinMode</span>(GREEN_LED, OUTPUT);  <span class="f">pinMode</span>(RED_LED, OUTPUT);
+  <span class="f">pinMode</span>(FLOW_PIN, INPUT_PULLUP);
+  <span class="f">attachInterrupt</span>(<span class="f">digitalPinToInterrupt</span>(FLOW_PIN), onFlowPulse, FALLING);
+  <span class="f">setFilling</span>(<span class="k">false</span>);
+  lcd.<span class="f">init</span>();
+  lcd.<span class="f">backlight</span>();
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">unsigned</span> <span class="k">long</span> now = <span class="f">millis</span>();
+  <span class="k">int</span> level = <span class="f">levelPercent</span>();
+
+  <span class="k">if</span> (now - lastCalc &gt;= <span class="n">1000</span>) {                <span class="c">// حساب التدفق كل ثانية</span>
+    <span class="f">noInterrupts</span>(); <span class="k">unsigned</span> <span class="k">long</span> p = pulses; pulses = <span class="n">0</span>; <span class="f">interrupts</span>();
+    flowLmin = p / <span class="n">7.5</span>;                        <span class="c">// YF-S201: التردد(Hz) / 7.5 = لتر/دقيقة</span>
+    lastCalc = now;
+
+    <span class="c">// منطق التحكم</span>
+    <span class="k">if</span> (!fault) {
+      <span class="k">if</span> (!filling &amp;&amp; level &lt;= START_FILL) <span class="f">setFilling</span>(<span class="k">true</span>);
+      <span class="k">if</span> (filling &amp;&amp; level &gt;= STOP_FILL)   <span class="f">setFilling</span>(<span class="k">false</span>);
+      <span class="k">if</span> (filling &amp;&amp; now - fillStart &gt; DRY_RUN_MS &amp;&amp; flowLmin &lt; <span class="n">0.2</span>) {  <span class="c">// حماية المضخة</span>
+        <span class="f">setFilling</span>(<span class="k">false</span>);
+        fault = <span class="k">true</span>;
+      }
+    }
+
+    <span class="c">// العرض</span>
+    lcd.<span class="f">setCursor</span>(<span class="n">0</span>, <span class="n">0</span>);
+    lcd.<span class="f">printf</span>(<span class="s">&quot;Level:%3d%% %s   &quot;</span>, level, filling ? <span class="s">&quot;FILL&quot;</span> : <span class="s">&quot;OK  &quot;</span>);
+    lcd.<span class="f">setCursor</span>(<span class="n">0</span>, <span class="n">1</span>);
+    <span class="k">if</span> (fault) lcd.<span class="f">print</span>(<span class="s">&quot;FAULT: NO WATER &quot;</span>);
+    <span class="k">else</span>       lcd.<span class="f">printf</span>(<span class="s">&quot;Flow:%5.1f L/m  &quot;</span>, flowLmin);
+    Serial.<span class="f">printf</span>(<span class="s">&quot;level=%d%% flow=%.2f filling=%d fault=%d\n&quot;</span>, level, flowLmin, filling, fault);
+  }
+
+  <span class="k">bool</span> alarm = fault || level &lt;= CRITICAL;
+  <span class="f">digitalWrite</span>(GREEN_LED, !alarm);
+  <span class="f">digitalWrite</span>(RED_LED, alarm ? (now / <span class="n">250</span>) % <span class="n">2</span> : LOW);
+  <span class="f">digitalWrite</span>(BUZZER_PIN, alarm ? (now / <span class="n">500</span>) % <span class="n">2</span> : LOW);   <span class="c">// Buzzer نشط</span>
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>حساس المستوى يعطي النسبة المئوية</li><li>تحت 30% → المضخة والصمام يعملان</li><li>فوق 90% → إيقاف</li><li>لا تدفق خلال 15 ثانية → عطل وإنذار</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../30/">→ المشروع 30</a><a class="btn ghost" href="../32/">المشروع 32 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

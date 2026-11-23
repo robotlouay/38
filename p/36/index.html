@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 36: آلة الرسم الذكية ثنائية المحاور (CNC XY Plotter) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#ef4444">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">36</span>آلة الرسم الذكية ثنائية المحاور (CNC XY Plotter)</h1>
+ <div class="en">CNC XY Plotter</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 108 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">آلة ترسم على الورق بقلم: محركا خطوة للمحورين X و Y وسيرفو يرفع القلم ويُنزله وفق أوامر G-code.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO + CNC Shield V3<i>board</i></span><span class="chip">محرك المحور X<i>NEMA17 + A4988</i></span><span class="chip">محرك المحور Y<i>NEMA17 + A4988</i></span><span class="chip">سيرفو القلم<i>SG90</i></span><span class="chip">مفاتيح النهاية<i>Endstops</i></span><span class="chip">مصدر 12V<i>12V PSU</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 36" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>محرك المحور X</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>X.MOT</b> <span></span></td></tr><tr><td>محرك المحور Y</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>Y.MOT</b> <span></span></td></tr><tr><td>سيرفو القلم</td><td>إشارة</td><td><b class='pin' dir='ltr'>Z+ (D11)</b> <span></span></td></tr><tr><td>سيرفو القلم</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو القلم</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>X</td><td><b class='pin' dir='ltr'>X-END (D9)</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>Y</td><td><b class='pin' dir='ltr'>Y-END (D10)</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>المشترك</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مصدر 12V</td><td>+</td><td><b class='pin' dir='ltr'>12V</b> <span></span></td></tr><tr><td>مصدر 12V</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/36_cnc_xy_plotter.ino" download>⬇ تحميل 36_cnc_xy_plotter.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>Servo (مدمجة مع Arduino IDE)</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتطور — المشروع 6: آلة الرسم الذكية ثنائية المحاور (CNC XY Plotter)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  هذا الكود مفسّر G-code مبسّط وتعليمي (G0/G1/G28/M3/M5) — مناسب لفهم الفكرة.</span>
+<span class="c">  للاستعمال الاحترافي ارفع برنامج GRBL على الأردوينو واستعمل Universal G-code Sender.</span>
+<span class="c"></span>
+<span class="c">  المكونات: Arduino Uno + CNC Shield V3 + مشغلان A4988 + محركا خطوة NEMA17</span>
+<span class="c">            + سيرفو SG90 لرفع القلم + سيور GT2 وبكرات</span>
+<span class="c">  التوصيل:</span>
+<span class="c">    المحور X: STEP → D2   DIR → D5        المحور Y: STEP → D3   DIR → D6</span>
+<span class="c">    ENABLE → D8   مفتاح نهاية X → D9   مفتاح نهاية Y → D10 (بين المنفذ و GND)</span>
+<span class="c">    سيرفو القلم: إشارة → D11 (منفذ Z+/SpnEn في الشيلد) ، 5V و GND</span>
+<span class="c">    التغذية: 12V على مدخل الطاقة في CNC Shield</span>
+<span class="c">  الاستعمال: Serial Monitor (115200 ، Newline) وأرسل أوامر مثل:</span>
+<span class="c">    G28            ← العودة إلى الصفر</span>
+<span class="c">    M3             ← إنزال القلم       M5 ← رفع القلم</span>
+<span class="c">    G1 X40 Y20     ← رسم خط إلى (40,20) بالمليمتر</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Servo.h&gt;
+
+<span class="k">const</span> <span class="k">int</span> X_STEP = <span class="n">2</span>, X_DIR = <span class="n">5</span>, Y_STEP = <span class="n">3</span>, Y_DIR = <span class="n">6</span>, EN_PIN = <span class="n">8</span>;
+<span class="k">const</span> <span class="k">int</span> X_LIMIT = <span class="n">9</span>, Y_LIMIT = <span class="n">10</span>, PEN_PIN = <span class="n">11</span>;
+<span class="k">const</span> <span class="k">float</span> STEPS_PER_MM = <span class="n">80.0</span>;     <span class="c">// GT2 + بكرة 20 سن + 1/16 microstep</span>
+<span class="k">const</span> <span class="k">int</span> PEN_UP = <span class="n">60</span>, PEN_DOWN = <span class="n">20</span>;
+<span class="k">const</span> <span class="k">float</span> MAX_X = <span class="n">200</span>, MAX_Y = <span class="n">200</span>;
+
+Servo pen;
+<span class="k">float</span> posX = <span class="n">0</span>, posY = <span class="n">0</span>;
+<span class="k">String</span> line = <span class="s">&quot;&quot;</span>;
+
+<span class="k">void</span> <span class="f">pulse</span>(<span class="k">int</span> pin) {
+  <span class="f">digitalWrite</span>(pin, HIGH); <span class="f">delayMicroseconds</span>(<span class="n">5</span>);
+  <span class="f">digitalWrite</span>(pin, LOW);
+}
+
+<span class="c">// خوارزمية Bresenham لتحريك المحورين معاً في خط مستقيم</span>
+<span class="k">void</span> <span class="f">moveTo</span>(<span class="k">float</span> x, <span class="k">float</span> y, <span class="k">int</span> stepDelayUs) {
+  x = <span class="f">constrain</span>(x, <span class="n">0</span>, MAX_X);
+  y = <span class="f">constrain</span>(y, <span class="n">0</span>, MAX_Y);
+  <span class="k">long</span> dx = <span class="f">lround</span>((x - posX) * STEPS_PER_MM);
+  <span class="k">long</span> dy = <span class="f">lround</span>((y - posY) * STEPS_PER_MM);
+  <span class="f">digitalWrite</span>(X_DIR, dx &gt;= <span class="n">0</span>);
+  <span class="f">digitalWrite</span>(Y_DIR, dy &gt;= <span class="n">0</span>);
+  dx = <span class="f">labs</span>(dx); dy = <span class="f">labs</span>(dy);
+  <span class="k">long</span> steps = <span class="f">max</span>(dx, dy), ex = <span class="n">0</span>, ey = <span class="n">0</span>;
+  <span class="k">for</span> (<span class="k">long</span> i = <span class="n">0</span>; i &lt; steps; i++) {
+    ex += dx; ey += dy;
+    <span class="k">if</span> (ex &gt;= steps) { ex -= steps; <span class="f">pulse</span>(X_STEP); }
+    <span class="k">if</span> (ey &gt;= steps) { ey -= steps; <span class="f">pulse</span>(Y_STEP); }
+    <span class="f">delayMicroseconds</span>(stepDelayUs);
+  }
+  posX = x; posY = y;
+}
+
+<span class="k">void</span> <span class="f">home</span>() {
+  pen.<span class="f">write</span>(PEN_UP); <span class="f">delay</span>(<span class="n">300</span>);
+  <span class="f">digitalWrite</span>(X_DIR, LOW);
+  <span class="k">while</span> (<span class="f">digitalRead</span>(X_LIMIT) == HIGH) { <span class="f">pulse</span>(X_STEP); <span class="f">delayMicroseconds</span>(<span class="n">600</span>); }
+  <span class="f">digitalWrite</span>(Y_DIR, LOW);
+  <span class="k">while</span> (<span class="f">digitalRead</span>(Y_LIMIT) == HIGH) { <span class="f">pulse</span>(Y_STEP); <span class="f">delayMicroseconds</span>(<span class="n">600</span>); }
+  posX = posY = <span class="n">0</span>;
+}
+
+<span class="k">float</span> <span class="f">valueAfter</span>(<span class="k">const</span> <span class="k">String</span>&amp; s, <span class="k">char</span> key, <span class="k">float</span> fallback) {
+  <span class="k">int</span> i = s.<span class="f">indexOf</span>(key);
+  <span class="k">return</span> i &lt; <span class="n">0</span> ? fallback : s.<span class="f">substring</span>(i + <span class="n">1</span>).<span class="f">toFloat</span>();
+}
+
+<span class="k">void</span> <span class="f">runCommand</span>(<span class="k">String</span> s) {
+  s.<span class="f">trim</span>(); s.<span class="f">toUpperCase</span>();
+  <span class="k">if</span> (s.<span class="f">length</span>() == <span class="n">0</span>) <span class="k">return</span>;
+  <span class="k">if</span> (s.<span class="f">startsWith</span>(<span class="s">&quot;G28&quot;</span>))      <span class="f">home</span>();
+  <span class="k">else</span> <span class="k">if</span> (s.<span class="f">startsWith</span>(<span class="s">&quot;M3&quot;</span>))  { pen.<span class="f">write</span>(PEN_DOWN); <span class="f">delay</span>(<span class="n">250</span>); }
+  <span class="k">else</span> <span class="k">if</span> (s.<span class="f">startsWith</span>(<span class="s">&quot;M5&quot;</span>))  { pen.<span class="f">write</span>(PEN_UP);   <span class="f">delay</span>(<span class="n">250</span>); }
+  <span class="k">else</span> <span class="k">if</span> (s.<span class="f">startsWith</span>(<span class="s">&quot;G0&quot;</span>))  <span class="f">moveTo</span>(<span class="f">valueAfter</span>(s, &#x27;X&#x27;, posX), <span class="f">valueAfter</span>(s, &#x27;Y&#x27;, posY), <span class="n">300</span>); <span class="c">// حركة سريعة</span>
+  <span class="k">else</span> <span class="k">if</span> (s.<span class="f">startsWith</span>(<span class="s">&quot;G1&quot;</span>))  <span class="f">moveTo</span>(<span class="f">valueAfter</span>(s, &#x27;X&#x27;, posX), <span class="f">valueAfter</span>(s, &#x27;Y&#x27;, posY), <span class="n">700</span>); <span class="c">// حركة رسم</span>
+  <span class="k">else</span> { Serial.<span class="f">println</span>(<span class="s">&quot;error: unknown&quot;</span>); <span class="k">return</span>; }
+  Serial.<span class="f">println</span>(<span class="s">&quot;ok&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">115200</span>);
+  <span class="f">pinMode</span>(X_STEP, OUTPUT); <span class="f">pinMode</span>(X_DIR, OUTPUT);
+  <span class="f">pinMode</span>(Y_STEP, OUTPUT); <span class="f">pinMode</span>(Y_DIR, OUTPUT);
+  <span class="f">pinMode</span>(EN_PIN, OUTPUT); <span class="f">digitalWrite</span>(EN_PIN, LOW);
+  <span class="f">pinMode</span>(X_LIMIT, INPUT_PULLUP); <span class="f">pinMode</span>(Y_LIMIT, INPUT_PULLUP);
+  pen.<span class="f">attach</span>(PEN_PIN);
+  pen.<span class="f">write</span>(PEN_UP);
+  Serial.<span class="f">println</span>(<span class="s">&quot;Plotter ready&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">while</span> (Serial.<span class="f">available</span>()) {
+    <span class="k">char</span> c = Serial.<span class="f">read</span>();
+    <span class="k">if</span> (c == &#x27;\n&#x27;) { <span class="f">runCommand</span>(line); line = <span class="s">&quot;&quot;</span>; }
+    <span class="k">else</span> <span class="k">if</span> (c != &#x27;\r&#x27;) line += c;
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>G28 يعيد الآلة إلى نقطة الصفر</li><li>M3 ينزل القلم و M5 يرفعه</li><li>G1 X Y يرسم خطاً مستقيماً (Bresenham)</li><li>للاحتراف: GRBL + Universal G-code Sender</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../35/">→ المشروع 35</a><a class="btn ghost" href="../37/">المشروع 37 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

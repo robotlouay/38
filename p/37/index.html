@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 37: اليد الروبوتية الحيوية ذات التحكم الوتري — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#ef4444">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">37</span>اليد الروبوتية الحيوية ذات التحكم الوتري</h1>
+ <div class="en">Bionic Robotic Hand</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 110 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">خمسة سيرفوهات تسحب أوتاراً تشبه العضلات فتنثني الأصابع، عبر لوحة PCA9685 ذات 16 قناة.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">لوحة السيرفو 16 قناة<i>PCA9685</i></span><span class="chip">5 سيرفوهات الأصابع<i>Servos</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 37" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>لوحة السيرفو 16 قناة</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>لوحة السيرفو 16 قناة</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>لوحة السيرفو 16 قناة</td><td>SDA</td><td><b class='pin' dir='ltr'>A4</b> <span></span></td></tr><tr><td>لوحة السيرفو 16 قناة</td><td>SCL</td><td><b class='pin' dir='ltr'>A5</b> <span></span></td></tr><tr><td>لوحة السيرفو 16 قناة</td><td>V+</td><td><span>مصدر 5–6V خارجي</span></td></tr><tr><td>5 سيرفوهات الأصابع</td><td>الإبهام</td><td><span>قناة 0</span></td></tr><tr><td>5 سيرفوهات الأصابع</td><td>السبابة</td><td><span>قناة 1</span></td></tr><tr><td>5 سيرفوهات الأصابع</td><td>الوسطى</td><td><span>قناة 2</span></td></tr><tr><td>5 سيرفوهات الأصابع</td><td>البنصر</td><td><span>قناة 3</span></td></tr><tr><td>5 سيرفوهات الأصابع</td><td>الخنصر</td><td><span>قناة 4</span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/37_bionic_hand_pca9685.ino" download>⬇ تحميل 37_bionic_hand_pca9685.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>Adafruit PWM Servo Driver Library</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتطور — المشروع 7: اليد الروبوتية الحيوية ذات التحكم الوتري</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  المكتبة: &quot;Adafruit PWM Servo Driver Library&quot;</span>
+<span class="c">  التوصيل:</span>
+<span class="c">    لوحة PCA9685 (16 قناة): SDA → A4   SCL → A5   VCC → 5V   GND → GND</span>
+<span class="c">    V+ (طرفية الطاقة الخضراء) ← مصدر خارجي 5–6V (3A على الأقل)</span>
+<span class="c">    السيرفوهات: الإبهام → قناة 0 ، السبابة → 1 ، الوسطى → 2 ، البنصر → 3 ، الخنصر → 4</span>
+<span class="c">  الأوامر من Serial Monitor (9600): o فتح ، c قبضة ، p التقاط بإصبعين ، v علامة النصر</span>
+<span class="c">                                     1..5 ثني/فرد إصبع واحد</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Wire.h&gt;
+<span class="k">#include</span> &lt;Adafruit_PWMServoDriver.h&gt;
+
+Adafruit_PWMServoDriver pwm = <span class="f">Adafruit_PWMServoDriver</span>(0x40);
+
+<span class="k">const</span> <span class="k">int</span> FINGERS = <span class="n">5</span>;
+<span class="k">const</span> <span class="k">int</span> SERVO_MIN = <span class="n">120</span>;    <span class="c">// نبضة 0° (عدّلها بعد المعايرة)</span>
+<span class="k">const</span> <span class="k">int</span> SERVO_MAX = <span class="n">500</span>;    <span class="c">// نبضة 180°</span>
+<span class="k">const</span> <span class="k">int</span> OPEN_DEG[FINGERS]  = {<span class="n">20</span>, <span class="n">10</span>, <span class="n">10</span>, <span class="n">10</span>, <span class="n">10</span>};    <span class="c">// الإصبع مفرود</span>
+<span class="k">const</span> <span class="k">int</span> CLOSE_DEG[FINGERS] = {<span class="n">150</span>,<span class="n">170</span>,<span class="n">170</span>,<span class="n">170</span>,<span class="n">170</span>};   <span class="c">// الإصبع مثني (الوتر مشدود)</span>
+
+<span class="k">int</span> current[FINGERS];
+<span class="k">bool</span> bent[FINGERS] = {<span class="k">false</span>};
+
+<span class="k">void</span> <span class="f">setFinger</span>(<span class="k">int</span> f, <span class="k">int</span> deg) {
+  current[f] = deg;
+  pwm.<span class="f">setPWM</span>(f, <span class="n">0</span>, <span class="f">map</span>(deg, <span class="n">0</span>, <span class="n">180</span>, SERVO_MIN, SERVO_MAX));
+}
+
+<span class="k">void</span> <span class="f">pose</span>(<span class="k">const</span> <span class="k">bool</span> closeMask[FINGERS]) {        <span class="c">// حركة متزامنة وناعمة لكل الأصابع</span>
+  <span class="k">int</span> target[FINGERS];
+  <span class="k">for</span> (<span class="k">int</span> f = <span class="n">0</span>; f &lt; FINGERS; f++) {
+    target[f] = closeMask[f] ? CLOSE_DEG[f] : OPEN_DEG[f];
+    bent[f] = closeMask[f];
+  }
+  <span class="k">for</span> (<span class="k">int</span> step = <span class="n">0</span>; step &lt;= <span class="n">30</span>; step++) {
+    <span class="k">for</span> (<span class="k">int</span> f = <span class="n">0</span>; f &lt; FINGERS; f++) {
+      <span class="k">int</span> a = current[f] + (target[f] - current[f]) * step / <span class="n">30</span>;
+      pwm.<span class="f">setPWM</span>(f, <span class="n">0</span>, <span class="f">map</span>(a, <span class="n">0</span>, <span class="n">180</span>, SERVO_MIN, SERVO_MAX));
+    }
+    <span class="f">delay</span>(<span class="n">15</span>);
+  }
+  <span class="k">for</span> (<span class="k">int</span> f = <span class="n">0</span>; f &lt; FINGERS; f++) current[f] = target[f];
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">9600</span>);
+  pwm.<span class="f">begin</span>();
+  pwm.<span class="f">setPWMFreq</span>(<span class="n">50</span>);                <span class="c">// السيرفو يعمل بتردد 50Hz</span>
+  <span class="k">for</span> (<span class="k">int</span> f = <span class="n">0</span>; f &lt; FINGERS; f++) <span class="f">setFinger</span>(f, OPEN_DEG[f]);
+  Serial.<span class="f">println</span>(<span class="s">&quot;Commands: o c p v 1-5&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">if</span> (!Serial.<span class="f">available</span>()) <span class="k">return</span>;
+  <span class="k">char</span> c = Serial.<span class="f">read</span>();
+  <span class="k">const</span> <span class="k">bool</span> OPEN[]    = {<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>};
+  <span class="k">const</span> <span class="k">bool</span> FIST[]    = {<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>};
+  <span class="k">const</span> <span class="k">bool</span> PINCH[]   = {<span class="n">1</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">0</span>};
+  <span class="k">const</span> <span class="k">bool</span> VICTORY[] = {<span class="n">1</span>,<span class="n">0</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">1</span>};
+  <span class="k">switch</span> (c) {
+    <span class="k">case</span> &#x27;o&#x27;: <span class="f">pose</span>(OPEN);    <span class="k">break</span>;
+    <span class="k">case</span> &#x27;c&#x27;: <span class="f">pose</span>(FIST);    <span class="k">break</span>;
+    <span class="k">case</span> &#x27;p&#x27;: <span class="f">pose</span>(PINCH);   <span class="k">break</span>;
+    <span class="k">case</span> &#x27;v&#x27;: <span class="f">pose</span>(VICTORY); <span class="k">break</span>;
+    default:
+      <span class="k">if</span> (c &gt;= &#x27;<span class="n">1</span>&#x27; &amp;&amp; c &lt;= &#x27;<span class="n">5</span>&#x27;) {
+        <span class="k">int</span> f = c - &#x27;<span class="n">1</span>&#x27;;
+        <span class="k">bool</span> m[FINGERS];
+        <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; FINGERS; i++) m[i] = bent[i];
+        m[f] = !m[f];
+        <span class="f">pose</span>(m);
+      }
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>PCA9685 تتحكم في 16 سيرفو عبر سلكين I2C</li><li>كل قناة تحرك إصبعاً</li><li>أوامر جاهزة: فتح، قبضة، التقاط، نصر</li><li>مصدر 5–6V خارجي للسيرفوهات</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../36/">→ المشروع 36</a><a class="btn ghost" href="../38/">المشروع 38 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

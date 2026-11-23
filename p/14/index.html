@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 14: مفتاح التحكم بالمرحل (Relay) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">14</span>مفتاح التحكم بالمرحل (Relay)</h1>
+ <div class="en">Relay Control</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 41 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">الريلاي يسمح للأردوينو بتشغيل أجهزة 220V بأمان وعزل تام.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">وحدة الريلاي<i>Relay Module</i></span><span class="chip">المصباح 220V<i>Lamp</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 14" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>وحدة الريلاي</td><td>IN</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>وحدة الريلاي</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>وحدة الريلاي</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>وحدة الريلاي</td><td>COM / NO</td><td><span>المصباح (COM / NO)</span></td></tr><tr><td>المصباح 220V</td><td>الطور (Phase)</td><td><span>عبر COM/NO</span></td></tr><tr><td>المصباح 220V</td><td>المحايد (Neutral)</td><td><span>مباشرة</span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/14_relay_control.ino" download>⬇ تحميل 14_relay_control.ino</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 14: مفتاح التحكم بالمرحل (Relay Module)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل:</span>
+<span class="c">    وحدة الريلاي: VCC → 5V   GND → GND   IN → Pin 8</span>
+<span class="c">    جهة الحِمل: COM و NO في سلك الطور (Phase) للمصباح</span>
+<span class="c">  ⚠ خطر: جهد 220V قاتل. افصل الكهرباء قبل أي توصيل، ويُفضّل التجربة أولاً</span>
+<span class="c">    بحِمل منخفض الجهد (مصباح 12V أو مروحة 5V).</span>
+<span class="c"></span>
+<span class="c">  من Serial Monitor: أرسل 1 للتشغيل و 0 للإطفاء.</span>
+<span class="c">  ملاحظة: بعض الوحدات تعمل بمنطق معكوس (Active LOW)، عندها اجعل ACTIVE_LOW = true.</span>
+<span class="c">*/</span>
+
+<span class="k">const</span> <span class="k">int</span> RELAY_PIN = <span class="n">8</span>;
+<span class="k">const</span> <span class="k">bool</span> ACTIVE_LOW = <span class="k">false</span>;
+
+<span class="k">void</span> <span class="f">relayOn</span>()  { <span class="f">digitalWrite</span>(RELAY_PIN, ACTIVE_LOW ? LOW : HIGH); }
+<span class="k">void</span> <span class="f">relayOff</span>() { <span class="f">digitalWrite</span>(RELAY_PIN, ACTIVE_LOW ? HIGH : LOW); }
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">9600</span>);
+  <span class="f">pinMode</span>(RELAY_PIN, OUTPUT);
+  <span class="f">relayOff</span>();
+  Serial.<span class="f">println</span>(<span class="s">&quot;Send 1 = ON, 0 = OFF&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">if</span> (Serial.<span class="f">available</span>()) {
+    <span class="k">char</span> c = Serial.<span class="f">read</span>();
+    <span class="k">if</span> (c == &#x27;<span class="n">1</span>&#x27;) { <span class="f">relayOn</span>();  Serial.<span class="f">println</span>(<span class="s">&quot;Lamp ON&quot;</span>);  }
+    <span class="k">if</span> (c == &#x27;<span class="n">0</span>&#x27;) { <span class="f">relayOff</span>(); Serial.<span class="f">println</span>(<span class="s">&quot;Lamp OFF&quot;</span>); }
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>الأردوينو يرسل HIGH إلى IN</li><li>الملف الداخلي يجذب المفتاح فيغلق COM-NO</li><li>المصباح يشتغل</li><li>LOW يفتح الدائرة</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../13/">→ المشروع 13</a><a class="btn ghost" href="../15/">المشروع 15 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

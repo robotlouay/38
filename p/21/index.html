@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 21: قفل الأبواب الذكي وسجل الحضور (RFID) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#f5a524">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">21</span>قفل الأبواب الذكي وسجل الحضور (RFID)</h1>
+ <div class="en">RFID Door Lock</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتوسط</span> &nbsp; صفحة 64 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">بطاقة مسموحة تفتح الباب مع ضوء أخضر، وبطاقة مجهولة تطلق إنذاراً.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">قارئ البطاقات<i>RFID RC522</i></span><span class="chip">سيرفو القفل<i>Servo SG90</i></span><span class="chip">LED أخضر<i>LED</i></span><span class="chip">LED أحمر<i>LED</i></span><span class="chip">البازر (الطنان)<i>Buzzer</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 21" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>قارئ البطاقات</td><td>SDA (SS)</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>SCK</td><td><b class='pin' dir='ltr'>D13</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>MOSI</td><td><b class='pin' dir='ltr'>D11</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>MISO</td><td><b class='pin' dir='ltr'>D12</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>RST</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>قارئ البطاقات</td><td>3.3V</td><td><b class='pin' dir='ltr'>3V3</b> <span></span></td></tr><tr><td>سيرفو القفل</td><td>إشارة (برتقالي)</td><td><b class='pin' dir='ltr'>D6</b> <span></span></td></tr><tr><td>سيرفو القفل</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو القفل</td><td>GND (بني)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>LED أخضر</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>D4</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>LED أخضر</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>LED أحمر</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>D5</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>LED أحمر</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>البازر (الطنان)</td><td>+</td><td><b class='pin' dir='ltr'>D7</b> <span></span></td></tr><tr><td>البازر (الطنان)</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/21_rfid_door_lock.ino" download>⬇ تحميل 21_rfid_door_lock.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>MFRC522 — GithubCommunity</li><li>Servo (مدمجة مع Arduino IDE)</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتوسط — المشروع 6: قفل الأبواب الذكي وسجل الحضور (RFID RC522)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  المكتبة: MFRC522 (GithubCommunity)</span>
+<span class="c">  التوصيل:</span>
+<span class="c">    RC522: 3.3V → 3.3V (وليس 5V!)  GND → GND  RST → Pin 9  SDA(SS) → Pin 10</span>
+<span class="c">           MOSI → Pin 11   MISO → Pin 12   SCK → Pin 13</span>
+<span class="c">    Servo: إشارة → Pin 6   أحمر → 5V   بني → GND</span>
+<span class="c">    LED أخضر ← 220Ω ← Pin 4     LED أحمر ← 220Ω ← Pin 5</span>
+<span class="c">    Buzzer (+) → Pin 7</span>
+<span class="c">  الخطوة 1: قرّب بطاقتك وانسخ الـ UID من Serial Monitor.</span>
+<span class="c">  الخطوة 2: ضعه في جدول allowed[] ثم ارفع الكود من جديد.</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;SPI.h&gt;
+<span class="k">#include</span> &lt;MFRC522.h&gt;
+<span class="k">#include</span> &lt;Servo.h&gt;
+
+<span class="k">const</span> <span class="k">int</span> SS_PIN = <span class="n">10</span>, RST_PIN = <span class="n">9</span>;
+<span class="k">const</span> <span class="k">int</span> SERVO_PIN = <span class="n">6</span>, GREEN_LED = <span class="n">4</span>, RED_LED = <span class="n">5</span>, BUZZER_PIN = <span class="n">7</span>;
+
+MFRC522 <span class="f">rfid</span>(SS_PIN, RST_PIN);
+Servo door;
+
+<span class="c">// البطاقات المسموح لها (غيّرها ببطاقاتك)</span>
+<span class="k">const</span> <span class="k">char</span>* allowed[] = { <span class="s">&quot;A1 B2 C3 D4&quot;</span>, <span class="s">&quot;DE AD BE EF&quot;</span> };
+<span class="k">const</span> <span class="k">int</span> ALLOWED_COUNT = <span class="f">sizeof</span>(allowed) / <span class="f">sizeof</span>(allowed[<span class="n">0</span>]);
+
+<span class="k">String</span> <span class="f">readUid</span>() {
+  <span class="k">String</span> uid = <span class="s">&quot;&quot;</span>;
+  <span class="k">for</span> (<span class="k">byte</span> i = <span class="n">0</span>; i &lt; rfid.uid.size; i++) {
+    <span class="k">if</span> (rfid.uid.uidByte[i] &lt; 0x10) uid += <span class="s">&quot;0&quot;</span>;
+    uid += <span class="k">String</span>(rfid.uid.uidByte[i], HEX);
+    <span class="k">if</span> (i &lt; rfid.uid.size - <span class="n">1</span>) uid += <span class="s">&quot; &quot;</span>;
+  }
+  uid.<span class="f">toUpperCase</span>();
+  <span class="k">return</span> uid;
+}
+
+<span class="k">bool</span> <span class="f">isAllowed</span>(<span class="k">const</span> <span class="k">String</span>&amp; uid) {
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; ALLOWED_COUNT; i++)
+    <span class="k">if</span> (uid == allowed[i]) <span class="k">return</span> <span class="k">true</span>;
+  <span class="k">return</span> <span class="k">false</span>;
+}
+
+<span class="k">void</span> <span class="f">grantAccess</span>() {
+  <span class="f">digitalWrite</span>(GREEN_LED, HIGH);
+  <span class="f">tone</span>(BUZZER_PIN, <span class="n">1500</span>, <span class="n">150</span>);
+  door.<span class="f">write</span>(<span class="n">90</span>);            <span class="c">// فتح</span>
+  <span class="f">delay</span>(<span class="n">3000</span>);
+  door.<span class="f">write</span>(<span class="n">0</span>);             <span class="c">// إغلاق بعد 3 ثوانٍ</span>
+  <span class="f">digitalWrite</span>(GREEN_LED, LOW);
+}
+
+<span class="k">void</span> <span class="f">denyAccess</span>() {
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">5</span>; i++) {
+    <span class="f">digitalWrite</span>(RED_LED, HIGH);
+    <span class="f">tone</span>(BUZZER_PIN, <span class="n">400</span>);
+    <span class="f">delay</span>(<span class="n">150</span>);
+    <span class="f">digitalWrite</span>(RED_LED, LOW);
+    <span class="f">noTone</span>(BUZZER_PIN);
+    <span class="f">delay</span>(<span class="n">100</span>);
+  }
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">9600</span>);
+  SPI.<span class="f">begin</span>();
+  rfid.<span class="f">PCD_Init</span>();
+  door.<span class="f">attach</span>(SERVO_PIN);
+  door.<span class="f">write</span>(<span class="n">0</span>);
+  <span class="f">pinMode</span>(GREEN_LED, OUTPUT);
+  <span class="f">pinMode</span>(RED_LED, OUTPUT);
+  <span class="f">pinMode</span>(BUZZER_PIN, OUTPUT);
+  Serial.<span class="f">println</span>(<span class="s">&quot;Scan a card...&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">if</span> (!rfid.<span class="f">PICC_IsNewCardPresent</span>() || !rfid.<span class="f">PICC_ReadCardSerial</span>()) <span class="k">return</span>;
+
+  <span class="k">String</span> uid = <span class="f">readUid</span>();
+  Serial.<span class="f">print</span>(<span class="s">&quot;Card UID: &quot;</span>);
+  Serial.<span class="f">print</span>(uid);
+  Serial.<span class="f">print</span>(<span class="s">&quot;  | time(s): &quot;</span>);
+  Serial.<span class="f">print</span>(<span class="f">millis</span>() / <span class="n">1000</span>);          <span class="c">// سجل حضور بسيط</span>
+
+  <span class="k">if</span> (<span class="f">isAllowed</span>(uid)) { Serial.<span class="f">println</span>(<span class="s">&quot;  -&gt; ACCESS GRANTED&quot;</span>); <span class="f">grantAccess</span>(); }
+  <span class="k">else</span>                { Serial.<span class="f">println</span>(<span class="s">&quot;  -&gt; ACCESS DENIED&quot;</span>);  <span class="f">denyAccess</span>();  }
+
+  rfid.<span class="f">PICC_HaltA</span>();
+  rfid.<span class="f">PCD_StopCrypto1</span>();
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>القارئ يقرأ رقم البطاقة UID</li><li>يُقارن بقائمة البطاقات المسموحة</li><li>مسموحة → أخضر + فتح 3 ثوانٍ</li><li>مرفوضة → أحمر + إنذار</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../20/">→ المشروع 20</a><a class="btn ghost" href="../22/">المشروع 22 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

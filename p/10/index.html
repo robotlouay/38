@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 10: التحكم في الإضاءة عن بُعد — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">10</span>التحكم في الإضاءة عن بُعد</h1>
+ <div class="en">IR Remote Light</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 29 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">نستقبل أوامر ريموت الأشعة تحت الحمراء ونشغّل الإضاءة أو نطفئها من مكانك.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">مستقبل الأشعة تحت الحمراء<i>IR Receiver VS1838B</i></span><span class="chip">LED<i>LED</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 10" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>مستقبل الأشعة تحت الحمراء</td><td>OUT</td><td><b class='pin' dir='ltr'>D11</b> <span></span></td></tr><tr><td>مستقبل الأشعة تحت الحمراء</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مستقبل الأشعة تحت الحمراء</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>LED</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>D3</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>LED</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/10_ir_remote_light.ino" download>⬇ تحميل 10_ir_remote_light.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>IRremote — الإصدار 4 أو أحدث</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 10: التحكم في الإضاءة عن بُعد (IR Remote)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  المكتبة: IRremote (الإصدار 4 أو أحدث) — Sketch &gt; Include Library &gt; Manage Libraries</span>
+<span class="c">  التوصيل (مستقبل VS1838B / KY-022):</span>
+<span class="c">    OUT → Pin 11   GND → GND   VCC → 5V</span>
+<span class="c">    LED ← 220Ω ← Pin 3</span>
+<span class="c"></span>
+<span class="c">  الخطوة 1: ارفع الكود وافتح Serial Monitor، واضغط أزرار الريموت لترى أكوادها.</span>
+<span class="c">  الخطوة 2: ضع الأكواد في BTN_ON و BTN_OFF و BTN_TOGGLE ثم ارفع الكود من جديد.</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;IRremote.hpp&gt;
+
+<span class="k">const</span> <span class="k">int</span> IR_PIN  = <span class="n">11</span>;
+<span class="k">const</span> <span class="k">int</span> LED_PIN = <span class="n">3</span>;
+
+<span class="c">// أكواد ريموت الكيت الشائع (NEC) — غيّرها حسب ما يظهر لك في Serial Monitor</span>
+<span class="k">const</span> <span class="k">uint16_t</span> BTN_ON     = 0x0C;   <span class="c">// الزر 1</span>
+<span class="k">const</span> <span class="k">uint16_t</span> BTN_OFF    = 0x18;   <span class="c">// الزر 2</span>
+<span class="k">const</span> <span class="k">uint16_t</span> BTN_TOGGLE = 0x40;   <span class="c">// زر OK</span>
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">9600</span>);
+  <span class="f">pinMode</span>(LED_PIN, OUTPUT);
+  IrReceiver.<span class="f">begin</span>(IR_PIN, ENABLE_LED_FEEDBACK);
+  Serial.<span class="f">println</span>(<span class="s">&quot;Press remote buttons...&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">if</span> (IrReceiver.<span class="f">decode</span>()) {
+    <span class="k">uint16_t</span> cmd = IrReceiver.decodedIRData.command;
+    <span class="k">bool</span> isRepeat = IrReceiver.decodedIRData.flags &amp; IRDATA_FLAGS_IS_REPEAT;
+
+    <span class="k">if</span> (!isRepeat) {
+      Serial.<span class="f">print</span>(<span class="s">&quot;Command: 0x&quot;</span>);
+      Serial.<span class="f">println</span>(cmd, HEX);
+
+      <span class="k">if</span> (cmd == BTN_ON)          <span class="f">digitalWrite</span>(LED_PIN, HIGH);
+      <span class="k">else</span> <span class="k">if</span> (cmd == BTN_OFF)    <span class="f">digitalWrite</span>(LED_PIN, LOW);
+      <span class="k">else</span> <span class="k">if</span> (cmd == BTN_TOGGLE) <span class="f">digitalWrite</span>(LED_PIN, !<span class="f">digitalRead</span>(LED_PIN)); <span class="c">// زر واحد للتبديل</span>
+    }
+    IrReceiver.<span class="f">resume</span>();   <span class="c">// الاستعداد للإشارة التالية</span>
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>المستقبل يلتقط الكود المشفر من الريموت</li><li>مكتبة IRremote تفك الكود</li><li>الزر 1 يشغّل، الزر 2 يطفئ، OK يبدّل</li><li>الأكواد تظهر في Serial Monitor</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../09/">→ المشروع 9</a><a class="btn ghost" href="../11/">المشروع 11 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

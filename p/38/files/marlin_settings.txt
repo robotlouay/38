@@ -1,0 +1,39 @@
+إعدادات Marlin الأساسية للطابعة المصغرة (Arduino Mega 2560 + RAMPS 1.4)
+كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)
+-----------------------------------------------------------------------
+1) حمّل Marlin 2.1.x من: https://marlinfw.org
+2) افتح المجلد في VS Code مع إضافة PlatformIO (أو Arduino IDE).
+3) عدّل الملف Marlin/Configuration.h كما يلي:
+
+#define MOTHERBOARD BOARD_RAMPS_14_EFB        // سخان رأس + مروحة + سخان منصة
+#define SERIAL_PORT 0
+#define BAUDRATE 115200
+
+#define TEMP_SENSOR_0 1                        // ثرمستور 100k NTC 3950 (الرأس)
+#define TEMP_SENSOR_BED 1                      // ثرمستور المنصة
+#define HEATER_0_MAXTEMP 260
+#define BED_MAXTEMP 110
+
+#define X_BED_SIZE 120                         // أبعاد الطابعة المصغرة بالمليمتر
+#define Y_BED_SIZE 120
+#define Z_MAX_POS 120
+
+#define DEFAULT_AXIS_STEPS_PER_UNIT { 80, 80, 400, 93 }   // X Y Z E (سيور GT2 / عمود T8 / بثق MK8)
+#define DEFAULT_MAX_FEEDRATE        { 150, 150, 5, 25 }
+
+// اتجاه المحركات: إذا تحرك محور عكس المتوقع غيّر قيمته
+#define INVERT_X_DIR false
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR false
+#define INVERT_E0_DIR false
+
+// الحماية الحرارية — لا تعطلها أبداً
+#define THERMAL_PROTECTION_HOTENDS
+#define THERMAL_PROTECTION_BED
+
+// شاشة RepRap Discount Full Graphic (12864) إن وجدت:
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+
+4) ارفع البرنامج على Arduino Mega، ثم اختبر الحركة من برنامج Pronterface أو Cura.
+5) معايرة البثق: أرسل M83 ثم G1 E100 F100 وقِس الخيط الذي دخل، وعدّل قيمة E.
+6) ضبط حرارة الرأس تلقائياً: M303 E0 S200 C8 ثم M500 لحفظ القيم.

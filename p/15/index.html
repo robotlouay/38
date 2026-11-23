@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 15: شاشة عرض النصوص والبيانات (LCD I2C) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">15</span>شاشة عرض النصوص والبيانات (LCD I2C)</h1>
+ <div class="en">LCD 16x2 I2C</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 44 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">نعرض رسالة ترحيبية ونصاً متحركاً على شاشة LCD تعمل بسلكين فقط (I2C).</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">شاشة LCD 16x2<i>LCD I2C</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 15" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>شاشة LCD 16x2</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>SDA</td><td><b class='pin' dir='ltr'>A4</b> <span></span></td></tr><tr><td>شاشة LCD 16x2</td><td>SCL</td><td><b class='pin' dir='ltr'>A5</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/15_lcd_i2c.ino" download>⬇ تحميل 15_lcd_i2c.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>LiquidCrystal I2C — Frank de Brabander</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 15: شاشة عرض النصوص والبيانات (LCD 16x2 I2C)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  المكتبة: LiquidCrystal I2C (Frank de Brabander)</span>
+<span class="c">  التوصيل:</span>
+<span class="c">    VCC → 5V   GND → GND   SDA → A4   SCL → A5</span>
+<span class="c">  إذا لم يظهر شيء: اضبط مقاومة التباين الزرقاء خلف الشاشة،</span>
+<span class="c">  أو جرّب العنوان 0x3F بدلاً من 0x27.</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;Wire.h&gt;
+<span class="k">#include</span> &lt;LiquidCrystal_I2C.h&gt;
+
+LiquidCrystal_I2C <span class="f">lcd</span>(0x27, <span class="n">16</span>, <span class="n">2</span>);   <span class="c">// العنوان، عدد الأعمدة، عدد الأسطر</span>
+
+<span class="k">const</span> <span class="k">char</span> message[] = <span class="s">&quot;   Welcome to robotlouay - 38 projects in a month   &quot;</span>;
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  lcd.<span class="f">init</span>();
+  lcd.<span class="f">backlight</span>();
+  lcd.<span class="f">setCursor</span>(<span class="n">0</span>, <span class="n">0</span>);
+  lcd.<span class="f">print</span>(<span class="s">&quot;Hello Arduino!&quot;</span>);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">static</span> <span class="k">unsigned</span> <span class="k">long</span> lastScroll = <span class="n">0</span>;
+  <span class="k">static</span> <span class="k">int</span> pos = <span class="n">0</span>;
+
+  <span class="c">// السطر الثاني: نص متحرك كل 300ms</span>
+  <span class="k">if</span> (<span class="f">millis</span>() - lastScroll &gt;= <span class="n">300</span>) {
+    lastScroll = <span class="f">millis</span>();
+    <span class="k">char</span> window[<span class="n">17</span>];
+    <span class="k">int</span> len = <span class="f">strlen</span>(message);
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">16</span>; i++) window[i] = message[(pos + i) % len];
+    window[<span class="n">16</span>] = &#x27;\<span class="n">0</span>&#x27;;
+    lcd.<span class="f">setCursor</span>(<span class="n">0</span>, <span class="n">1</span>);
+    lcd.<span class="f">print</span>(window);
+    pos = (pos + <span class="n">1</span>) % len;
+  }
+
+  <span class="c">// عدّاد الثواني في نهاية السطر الأول</span>
+  lcd.<span class="f">setCursor</span>(<span class="n">14</span>, <span class="n">0</span>);
+  <span class="k">unsigned</span> <span class="k">long</span> s = (<span class="f">millis</span>() / <span class="n">1000</span>) % <span class="n">100</span>;
+  <span class="k">if</span> (s &lt; <span class="n">10</span>) lcd.<span class="f">print</span>(&#x27;<span class="n">0</span>&#x27;);
+  lcd.<span class="f">print</span>(s);
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>lcd.init() تهيئ الشاشة</li><li>setCursor(عمود، سطر) تحدد الموضع</li><li>print() تكتب النص</li><li>النص يتحرك كل 300ms</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../14/">→ المشروع 14</a><a class="btn ghost" href="../16/">المشروع 16 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

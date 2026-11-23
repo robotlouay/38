@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 17: سيارة تتبع الخط — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#f5a524">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">17</span>سيارة تتبع الخط</h1>
+ <div class="en">Line Follower Robot</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتوسط</span> &nbsp; صفحة 52 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">روبوت بعجلات يتبع خطاً أسود على أرضية بيضاء باستعمال حساسين للأشعة تحت الحمراء.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">حساس الخط الأيمن<i>IR Line Sensor</i></span><span class="chip">حساس الخط الأيسر<i>IR Line Sensor</i></span><span class="chip">مشغل المحركات<i>L298N</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 17" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>حساس الخط الأيمن</td><td>OUT</td><td><b class='pin' dir='ltr'>D4</b> <span></span></td></tr><tr><td>حساس الخط الأيمن</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>حساس الخط الأيمن</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>حساس الخط الأيسر</td><td>OUT</td><td><b class='pin' dir='ltr'>D5</b> <span></span></td></tr><tr><td>حساس الخط الأيسر</td><td>VCC</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>حساس الخط الأيسر</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN1</td><td><b class='pin' dir='ltr'>D6</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN2</td><td><b class='pin' dir='ltr'>D7</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN3</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>IN4</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>مشغل المحركات</td><td>12V</td><td><span>موجب البطارية 7.4V</span></td></tr><tr><td>مشغل المحركات</td><td>OUT1/OUT2</td><td><span>المحرك الأيمن</span></td></tr><tr><td>مشغل المحركات</td><td>OUT3/OUT4</td><td><span>المحرك الأيسر</span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/17_line_follower.ino" download>⬇ تحميل 17_line_follower.ino</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتوسط — المشروع 2: سيارة تتبع الخط (Line Follower)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل:</span>
+<span class="c">    حساس الخط الأيمن OUT → Pin 4     حساس الخط الأيسر OUT → Pin 5</span>
+<span class="c">    VCC الحساسين → 5V ، GND → GND</span>
+<span class="c">    L298N: IN1 → Pin 6   IN2 → Pin 7   IN3 → Pin 8   IN4 → Pin 9</span>
+<span class="c">           OUT1/OUT2 → المحرك الأيمن   OUT3/OUT4 → المحرك الأيسر</span>
+<span class="c">           12V ← موجب البطارية (7.4V)  GND ← سالب البطارية + GND الأردوينو</span>
+<span class="c">           5V (من L298N) → VIN في الأردوينو (اختياري لتغذية اللوحة)</span>
+<span class="c">           ENA و ENB: اترك الجمبر في مكانه (سرعة كاملة)</span>
+<span class="c">  أغلب الحساسات تعطي HIGH فوق الأسود و LOW فوق الأبيض. إن كان حساسك معكوساً غيّر BLACK.</span>
+<span class="c">*/</span>
+
+<span class="k">const</span> <span class="k">int</span> RIGHT_SENSOR = <span class="n">4</span>;
+<span class="k">const</span> <span class="k">int</span> LEFT_SENSOR  = <span class="n">5</span>;
+<span class="k">const</span> <span class="k">int</span> IN1 = <span class="n">6</span>, IN2 = <span class="n">7</span>;   <span class="c">// المحرك الأيمن</span>
+<span class="k">const</span> <span class="k">int</span> IN3 = <span class="n">8</span>, IN4 = <span class="n">9</span>;   <span class="c">// المحرك الأيسر</span>
+<span class="k">const</span> <span class="k">int</span> BLACK = HIGH;
+
+<span class="k">void</span> <span class="f">motors</span>(<span class="k">int</span> r, <span class="k">int</span> l) {   <span class="c">// 1 = للأمام ، -1 = للخلف ، 0 = توقف</span>
+  <span class="f">digitalWrite</span>(IN1, r == <span class="n">1</span>);  <span class="f">digitalWrite</span>(IN2, r == -<span class="n">1</span>);
+  <span class="f">digitalWrite</span>(IN3, l == <span class="n">1</span>);  <span class="f">digitalWrite</span>(IN4, l == -<span class="n">1</span>);
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  <span class="f">pinMode</span>(RIGHT_SENSOR, INPUT);
+  <span class="f">pinMode</span>(LEFT_SENSOR, INPUT);
+  <span class="f">pinMode</span>(IN1, OUTPUT); <span class="f">pinMode</span>(IN2, OUTPUT);
+  <span class="f">pinMode</span>(IN3, OUTPUT); <span class="f">pinMode</span>(IN4, OUTPUT);
+  <span class="f">delay</span>(<span class="n">2000</span>);                 <span class="c">// وقت لوضع الروبوت على المسار</span>
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">bool</span> rightOnBlack = <span class="f">digitalRead</span>(RIGHT_SENSOR) == BLACK;
+  <span class="k">bool</span> leftOnBlack  = <span class="f">digitalRead</span>(LEFT_SENSOR)  == BLACK;
+
+  <span class="k">if</span> (!rightOnBlack &amp;&amp; !leftOnBlack)      <span class="f">motors</span>(<span class="n">1</span>, <span class="n">1</span>);    <span class="c">// الخط بين الحساسين → للأمام</span>
+  <span class="k">else</span> <span class="k">if</span> (rightOnBlack &amp;&amp; !leftOnBlack)  <span class="f">motors</span>(-<span class="n">1</span>, <span class="n">1</span>);   <span class="c">// الخط على اليمين → انعطف يميناً</span>
+  <span class="k">else</span> <span class="k">if</span> (!rightOnBlack &amp;&amp; leftOnBlack)  <span class="f">motors</span>(<span class="n">1</span>, -<span class="n">1</span>);   <span class="c">// الخط على اليسار → انعطف يساراً</span>
+  <span class="k">else</span>                                    <span class="f">motors</span>(<span class="n">0</span>, <span class="n">0</span>);    <span class="c">// تقاطع أو نهاية المسار → توقف</span>
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>كل حساس يعطي HIGH فوق الأسود</li><li>الحساسان على الأبيض → للأمام</li><li>الأيمن على الأسود → انعطاف يميناً</li><li>الأيسر على الأسود → انعطاف يساراً</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../16/">→ المشروع 16</a><a class="btn ghost" href="../18/">المشروع 18 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

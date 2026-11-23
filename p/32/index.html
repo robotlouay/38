@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 32: نظام موازنة الكرة الذكي ثنائي المحور (PID) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#ef4444">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">32</span>نظام موازنة الكرة الذكي ثنائي المحور (PID)</h1>
+ <div class="en">PID Ball &amp; Plate</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 100 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">شاشة لمس تعرف موقع الكرة، ومتحكم PID يميل اللوح بمحركين حتى تستقر الكرة في المنتصف.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">شاشة لمس مقاومة<i>4-Wire Touch Panel</i></span><span class="chip">سيرفو المحور X<i>Servo SG90</i></span><span class="chip">سيرفو المحور Y<i>Servo SG90</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 32" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>شاشة لمس مقاومة</td><td>Y+</td><td><b class='pin' dir='ltr'>A1</b> <span></span></td></tr><tr><td>شاشة لمس مقاومة</td><td>X−</td><td><b class='pin' dir='ltr'>A2</b> <span></span></td></tr><tr><td>شاشة لمس مقاومة</td><td>X+</td><td><b class='pin' dir='ltr'>D7</b> <span></span></td></tr><tr><td>شاشة لمس مقاومة</td><td>Y−</td><td><b class='pin' dir='ltr'>D6</b> <span></span></td></tr><tr><td>سيرفو المحور X</td><td>إشارة (برتقالي)</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>سيرفو المحور X</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو المحور X</td><td>GND (بني)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>سيرفو المحور Y</td><td>إشارة (برتقالي)</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>سيرفو المحور Y</td><td>VCC (أحمر)</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>سيرفو المحور Y</td><td>GND (بني)</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/32_pid_ball_plate.ino" download>⬇ تحميل 32_pid_ball_plate.ino</a></div>
+ <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>Servo (مدمجة مع Arduino IDE)</li><li>Adafruit TouchScreen</li></ul>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المستوى المتطور — المشروع 2: نظام موازنة الكرة الذكي ثنائي المحور (PID Ball &amp; Plate)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  المكتبة: &quot;Adafruit TouchScreen&quot;</span>
+<span class="c">  التوصيل (شاشة لمس مقاومة 4 أسلاك):</span>
+<span class="c">    Y+ → A1   X− → A2   X+ → Pin 7   Y− → Pin 6     (Y+ و X− يجب أن يكونا منافذ تماثلية)</span>
+<span class="c">    سيرفو المحور X → Pin 9    سيرفو المحور Y → Pin 10</span>
+<span class="c">    تغذية السيرفوهات: مصدر خارجي 5–6V + توحيد GND</span>
+<span class="c">  المعايرة: افتح Serial Monitor (115200)، حرّك الكرة إلى الحواف وسجّل أقل وأعلى قراءة</span>
+<span class="c">  لكل محور، ثم عدّل X_MIN..Y_MAX. بعدها اضبط Kp ثم Kd ثم Ki.</span>
+<span class="c">*/</span>
+
+<span class="k">#include</span> &lt;TouchScreen.h&gt;
+<span class="k">#include</span> &lt;Servo.h&gt;
+
+<span class="k">#define</span> YP A1   <span class="c">// يجب أن يكون تماثلياً</span>
+<span class="k">#define</span> XM A2   <span class="c">// يجب أن يكون تماثلياً</span>
+<span class="k">#define</span> XP <span class="n">7</span>
+<span class="k">#define</span> YM <span class="n">6</span>
+TouchScreen <span class="f">ts</span>(XP, YP, XM, YM, <span class="n">300</span>);
+
+Servo servoX, servoY;
+<span class="k">const</span> <span class="k">int</span> X_CENTER_ANGLE = <span class="n">90</span>, Y_CENTER_ANGLE = <span class="n">90</span>;   <span class="c">// الزاوية التي يكون فيها اللوح مستوياً</span>
+<span class="k">const</span> <span class="k">int</span> TILT_LIMIT = <span class="n">20</span>;                            <span class="c">// أقصى ميلان ± درجة</span>
+
+<span class="k">const</span> <span class="k">int</span> X_MIN = <span class="n">100</span>, X_MAX = <span class="n">920</span>, Y_MIN = <span class="n">90</span>, Y_MAX = <span class="n">930</span>;   <span class="c">// حدود القراءة (بعد المعايرة)</span>
+
+<span class="c">// معاملات PID (نقطة بداية جيدة)</span>
+<span class="k">float</span> Kp = <span class="n">0.045</span>, Ki = <span class="n">0.0008</span>, Kd = <span class="n">0.025</span>;
+
+<span class="k">float</span> setX = <span class="n">0</span>, setY = <span class="n">0</span>;              <span class="c">// الهدف: مركز اللوح (بالمليمتر النسبي)</span>
+<span class="k">float</span> iX = <span class="n">0</span>, iY = <span class="n">0</span>, lastErrX = <span class="n">0</span>, lastErrY = <span class="n">0</span>;
+<span class="k">float</span> fx = <span class="n">0</span>, fy = <span class="n">0</span>;                  <span class="c">// موقع مُرشَّح</span>
+<span class="k">unsigned</span> <span class="k">long</span> lastT = <span class="n">0</span>, lastSeen = <span class="n">0</span>;
+
+<span class="k">float</span> <span class="f">pid</span>(<span class="k">float</span> err, <span class="k">float</span> &amp;integral, <span class="k">float</span> &amp;lastErr, <span class="k">float</span> dt) {
+  integral += err * dt;
+  integral = <span class="f">constrain</span>(integral, -<span class="n">2000</span>, <span class="n">2000</span>);        <span class="c">// منع التراكم الزائد</span>
+  <span class="k">float</span> derivative = (err - lastErr) / dt;
+  lastErr = err;
+  <span class="k">return</span> Kp * err + Ki * integral + Kd * derivative;
+}
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  Serial.<span class="f">begin</span>(<span class="n">115200</span>);
+  servoX.<span class="f">attach</span>(<span class="n">9</span>);
+  servoY.<span class="f">attach</span>(<span class="n">10</span>);
+  servoX.<span class="f">write</span>(X_CENTER_ANGLE);
+  servoY.<span class="f">write</span>(Y_CENTER_ANGLE);
+  lastT = <span class="f">millis</span>();
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  TSPoint p = ts.<span class="f">getPoint</span>();
+  <span class="f">pinMode</span>(XM, OUTPUT); <span class="f">pinMode</span>(YP, OUTPUT);            <span class="c">// إرجاع المنافذ بعد القراءة</span>
+  <span class="k">unsigned</span> <span class="k">long</span> now = <span class="f">millis</span>();
+  <span class="k">if</span> (now - lastT &lt; <span class="n">20</span>) <span class="k">return</span>;                        <span class="c">// حلقة تحكم 50 مرة في الثانية</span>
+  <span class="k">float</span> dt = (now - lastT) / <span class="n">1000.0</span>;
+  lastT = now;
+
+  <span class="k">if</span> (p.z &gt; <span class="n">50</span>) {                                      <span class="c">// الكرة على اللوح</span>
+    lastSeen = now;
+    <span class="k">float</span> x = <span class="f">map</span>(p.x, X_MIN, X_MAX, -<span class="n">100</span>, <span class="n">100</span>);       <span class="c">// -100..100 من المركز</span>
+    <span class="k">float</span> y = <span class="f">map</span>(p.y, Y_MIN, Y_MAX, -<span class="n">100</span>, <span class="n">100</span>);
+    fx = <span class="n">0.6</span> * fx + <span class="n">0.4</span> * x;                           <span class="c">// ترشيح بسيط للتشويش</span>
+    fy = <span class="n">0.6</span> * fy + <span class="n">0.4</span> * y;
+
+    <span class="k">float</span> outX = <span class="f">pid</span>(setX - fx, iX, lastErrX, dt) * <span class="n">10</span>;
+    <span class="k">float</span> outY = <span class="f">pid</span>(setY - fy, iY, lastErrY, dt) * <span class="n">10</span>;
+    servoX.<span class="f">write</span>(X_CENTER_ANGLE + <span class="f">constrain</span>(outX, -TILT_LIMIT, TILT_LIMIT));
+    servoY.<span class="f">write</span>(Y_CENTER_ANGLE + <span class="f">constrain</span>(outY, -TILT_LIMIT, TILT_LIMIT));
+
+    Serial.<span class="f">print</span>(fx); Serial.<span class="f">print</span>(&#x27;\t&#x27;); Serial.<span class="f">println</span>(fy);  <span class="c">// للرسم في Serial Plotter</span>
+  } <span class="k">else</span> <span class="k">if</span> (now - lastSeen &gt; <span class="n">500</span>) {                   <span class="c">// لا توجد كرة → لوح مستوٍ</span>
+    servoX.<span class="f">write</span>(X_CENTER_ANGLE);
+    servoY.<span class="f">write</span>(Y_CENTER_ANGLE);
+    iX = iY = <span class="n">0</span>;
+  }
+}
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>شاشة اللمس تعطي إحداثيات الكرة X و Y</li><li>الخطأ = الهدف − الموقع</li><li>PID يحسب الميلان المناسب</li><li>السيرفوهان يصححان 50 مرة في الثانية</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../31/">→ المشروع 31</a><a class="btn ghost" href="../33/">المشروع 33 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>

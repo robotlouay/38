@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المشروع 12: زر التحكم الذكي (Push Button) — 38 مشروع في شهر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css"></head>
+<body style="--lc:#22b5fc">
+<header class="hero"><div class="wrap">
+ <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
+ <h1><span class="num">12</span>زر التحكم الذكي (Push Button)</h1>
+ <div class="en">Push Button</div>
+ <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 35 في الكتاب</p>
+</div></header>
+<main class="wrap">
+ <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <video controls preload="metadata" playsinline src="video.mp4"></video>
+ <p style="margin:12px 0 0">ننتقل من المخرجات إلى المدخلات: الـ LED يضيء فقط ما دام الزر مضغوطاً.</p></section>
+
+ <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">الزر الضاغط<i>Push Button</i></span><span class="chip">مصباح LED<i>LED</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+
+ <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 12" onclick="document.getElementById('z').style.display='block'">
+ <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
+ <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>الزر الضاغط</td><td>الطرف 1</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>الزر الضاغط</td><td>الطرف 2</td><td><b class='pin' dir='ltr'>D2</b> <span></span></td></tr><tr><td>الزر الضاغط</td><td>مقاومة 10kΩ</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>الزر الضاغط</td><td>مقاومة 10kΩ</td><td><span>بين «الطرف 2» و «مقاومة 10kΩ»</span></td></tr><tr><td>مصباح LED</td><td>+ الطرف الطويل</td><td><b class='pin' dir='ltr'>D13</b> <span>عبر مقاومة 220Ω</span></td></tr><tr><td>مصباح LED</td><td>− الطرف القصير</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
+
+ <section><h2><span class="i">3</span>الكود</h2>
+ <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/12_push_button.ino" download>⬇ تحميل 12_push_button.ino</a></div>
+ <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
+ <pre class="code" id="code"><span class="c">/*</span>
+<span class="c">  المشروع 12: زر التحكم الذكي (Push Button)</span>
+<span class="c">  كتاب: 38 مشروع في شهر — لؤي النصري (@robotlouay)</span>
+<span class="c"></span>
+<span class="c">  التوصيل (مقاومة سحب للأسفل Pull-down):</span>
+<span class="c">    - طرف الزر الأول ← 5V</span>
+<span class="c">    - طرف الزر الثاني ← Pin 2  + مقاومة 10kΩ من Pin 2 إلى GND</span>
+<span class="c">    - LED ← 220Ω ← Pin 13 ، والطرف القصير ← GND</span>
+<span class="c">*/</span>
+
+<span class="k">const</span> <span class="k">int</span> BUTTON_PIN = <span class="n">2</span>;
+<span class="k">const</span> <span class="k">int</span> LED_PIN    = <span class="n">13</span>;
+
+<span class="k">void</span> <span class="f">setup</span>() {
+  <span class="f">pinMode</span>(BUTTON_PIN, INPUT);   <span class="c">// المقاومة الخارجية 10kΩ تُثبّت القراءة على LOW</span>
+  <span class="f">pinMode</span>(LED_PIN, OUTPUT);
+}
+
+<span class="k">void</span> <span class="f">loop</span>() {
+  <span class="k">int</span> state = <span class="f">digitalRead</span>(BUTTON_PIN);
+  <span class="k">if</span> (state == HIGH) {          <span class="c">// الزر مضغوط</span>
+    <span class="f">digitalWrite</span>(LED_PIN, HIGH);
+  } <span class="k">else</span> {                      <span class="c">// الزر محرر</span>
+    <span class="f">digitalWrite</span>(LED_PIN, LOW);
+  }
+}
+
+<span class="c">/*</span>
+<span class="c">  بديل بدون مقاومة خارجية:</span>
+<span class="c">    pinMode(BUTTON_PIN, INPUT_PULLUP);  وصِل الزر بين Pin 2 و GND</span>
+<span class="c">    عندها تنعكس القراءة: LOW = مضغوط</span>
+<span class="c">*/</span>
+</pre></section>
+
+ <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>مقاومة 10kΩ تُبقي القراءة LOW</li><li>الضغط يصل 5V إلى المنفذ 2</li><li>digitalRead(2) == HIGH → إضاءة</li><li>تحرير الزر → إطفاء</li></ol></section>
+
+ <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
+ <div class="nav"><a class="btn ghost" href="../11/">→ المشروع 11</a><a class="btn ghost" href="../13/">المشروع 13 ←</a></div>
+</main>
+<div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
+<footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
+<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+</body></html>
