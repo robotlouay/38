@@ -5,25 +5,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/style.css"></head>
 <body style="--lc:#22b5fc">
+<nav class="top"><div class="wrap"><a class="logo" href="../../"><b>38</b>مشروع في شهر</a><div class="links"><a href="../../#lv-b">المبتدئ</a><a href="../../#lv-m">المتوسط</a><a href="../../#lv-a">المتقدم</a><a href="../../#lv-e">المتطور</a></div></div></nav>
 <header class="hero"><div class="wrap">
- <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
  <h1><span class="num">2</span>تشغيل الصوت والنغمات</h1>
  <div class="en">Buzzer Melody</div>
- <p style="margin:12px 0 0"><span class="lv">المستوى المبتدئ</span> &nbsp; صفحة 5 في الكتاب</p>
+ <p style="margin:14px 0 0"><span class="lv">المستوى المبتدئ</span><span class="pill">📖 صفحة 5 في الكتاب</span><span class="pill">🧩 متوفر على mBlock 5</span></p>
+ <div class="toc"><a href="#video">▶ الفيديو</a><a href="#parts">المكونات</a><a href="#wiring">التوصيل</a><a href="#src">الكود</a><a href="#how">كيف يعمل؟</a></div>
 </div></header>
 <main class="wrap">
- <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <section id="video"><h2><span class="i">▶</span>فيديو الشرح</h2>
  <video controls preload="metadata" playsinline src="video.mp4"></video>
  <p style="margin:12px 0 0">نجعل الأردوينو يصدر إنذاراً متقطعاً ثم يعزف سلّماً موسيقياً بالدالة tone().</p></section>
 
- <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">البازر (الطنان)<i>Passive Buzzer</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+ <section id="parts"><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">البازر (الطنان)<i>Passive Buzzer</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
 
- <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <section id="wiring"><h2><span class="i">2</span>مخطط التوصيل</h2>
  <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 2" onclick="document.getElementById('z').style.display='block'">
  <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
  <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>البازر (الطنان)</td><td>+</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>البازر (الطنان)</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
 
- <section><h2><span class="i">3</span>الكود</h2>
+ <section id="src"><h2><span class="i">3</span>الكود</h2>
+ <div class="tabs"><button class="tab on" onclick="tab(0,this)">Arduino IDE</button><button class="tab" onclick="tab(1,this)">mBlock 5</button></div>
+ <div class="pane on">
  <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/02_buzzer_melody.ino" download>⬇ تحميل 02_buzzer_melody.ino</a></div>
  <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
  <pre class="code" id="code"><span class="c">/*</span>
@@ -82,14 +85,16 @@
   <span class="f">playMelody</span>();
   <span class="f">delay</span>(<span class="n">2000</span>);
 }
-</pre></section>
+</pre></div>
+ <div class="pane"><div class="mbnote">🧩 <b>mBlock 5</b>: اختر الجهاز <b>Arduino Uno</b> ثم وضع <b>Upload</b>، وأنشئ المتغيرات المستعملة من فئة Variables. <br>نسخة مطابقة: إنذار ثلاث نغمات ثم سلّم موسيقي.</div><div class="mb"><img src="mblock.png" alt="كود mBlock 5 للمشروع 2" onclick="window.open(this.src)"></div><p style="margin:10px 0 0"><a class="btn ghost" href="mblock.png" download>⬇ تحميل صورة الكود</a></p></div></section>
 
- <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>tone(8, 1000) تولد نغمة 1000 هرتز</li><li>noTone(8) توقف الصوت</li><li>مصفوفة النوتات تُعزف واحدة تلو الأخرى</li><li>تتكرر الدورة كل ثانيتين</li></ol></section>
+ <section id="how"><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>tone(8, 1000) تولد نغمة 1000 هرتز</li><li>noTone(8) توقف الصوت</li><li>مصفوفة النوتات تُعزف واحدة تلو الأخرى</li><li>تتكرر الدورة كل ثانيتين</li></ol></section>
 
  <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
  <div class="nav"><a class="btn ghost" href="../01/">→ المشروع 1</a><a class="btn ghost" href="../03/">المشروع 3 ←</a></div>
 </main>
 <div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
 <footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
-<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+<script>function tab(i,b){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.pane').forEach((p,j)=>p.classList.toggle('on',j==i))}
+function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
 </body></html>

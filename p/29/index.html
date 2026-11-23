@@ -5,25 +5,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/style.css"></head>
 <body style="--lc:#6c63ff">
+<nav class="top"><div class="wrap"><a class="logo" href="../../"><b>38</b>مشروع في شهر</a><div class="links"><a href="../../#lv-b">المبتدئ</a><a href="../../#lv-m">المتوسط</a><a href="../../#lv-a">المتقدم</a><a href="../../#lv-e">المتطور</a></div></div></nav>
 <header class="hero"><div class="wrap">
- <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
  <h1><span class="num">29</span>الذراع الروبوتية خماسية المحاور مع تسجيل الحركة</h1>
  <div class="en">5-DOF Robotic Arm</div>
- <p style="margin:12px 0 0"><span class="lv">المستوى المتقدم</span> &nbsp; صفحة 90 في الكتاب</p>
+ <p style="margin:14px 0 0"><span class="lv">المستوى المتقدم</span><span class="pill">📖 صفحة 90 في الكتاب</span></p>
+ <div class="toc"><a href="#video">▶ الفيديو</a><a href="#parts">المكونات</a><a href="#wiring">التوصيل</a><a href="#src">الكود</a><a href="#how">كيف يعمل؟</a></div>
 </div></header>
 <main class="wrap">
- <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <section id="video"><h2><span class="i">▶</span>فيديو الشرح</h2>
  <video controls preload="metadata" playsinline src="video.mp4"></video>
  <p style="margin:12px 0 0">خمس مقاومات متغيرة تحرك خمسة سيرفوهات، والأردوينو يسجل الحركة ويعيدها تلقائياً.</p></section>
 
- <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">5 محركات سيرفو<i>MG996R / SG90</i></span><span class="chip">5 مقاومات متغيرة<i>Potentiometer 10kΩ</i></span><span class="chip">زرا التسجيل والتشغيل<i>Buttons</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+ <section id="parts"><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO UNO<i>board</i></span><span class="chip">5 محركات سيرفو<i>MG996R / SG90</i></span><span class="chip">5 مقاومات متغيرة<i>Potentiometer 10kΩ</i></span><span class="chip">زرا التسجيل والتشغيل<i>Buttons</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
 
- <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <section id="wiring"><h2><span class="i">2</span>مخطط التوصيل</h2>
  <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 29" onclick="document.getElementById('z').style.display='block'">
  <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
  <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>5 محركات سيرفو</td><td>القاعدة</td><td><b class='pin' dir='ltr'>D3</b> <span></span></td></tr><tr><td>5 محركات سيرفو</td><td>الكتف</td><td><b class='pin' dir='ltr'>D5</b> <span></span></td></tr><tr><td>5 محركات سيرفو</td><td>المرفق</td><td><b class='pin' dir='ltr'>D6</b> <span></span></td></tr><tr><td>5 محركات سيرفو</td><td>الرسغ</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>5 محركات سيرفو</td><td>القابض</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>5 محركات سيرفو</td><td>VCC</td><td><span>مصدر 5V خارجي 3A</span></td></tr><tr><td>5 محركات سيرفو</td><td>GND</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأوسط 1</td><td><b class='pin' dir='ltr'>A0</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأوسط 2</td><td><b class='pin' dir='ltr'>A1</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأوسط 3</td><td><b class='pin' dir='ltr'>A2</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأوسط 4</td><td><b class='pin' dir='ltr'>A3</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأوسط 5</td><td><b class='pin' dir='ltr'>A4</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأطراف</td><td><b class='pin' dir='ltr'>5V</b> <span></span></td></tr><tr><td>5 مقاومات متغيرة</td><td>الأطراف</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr><tr><td>زرا التسجيل والتشغيل</td><td>تسجيل</td><td><b class='pin' dir='ltr'>D11</b> <span></span></td></tr><tr><td>زرا التسجيل والتشغيل</td><td>تشغيل</td><td><b class='pin' dir='ltr'>D12</b> <span></span></td></tr><tr><td>زرا التسجيل والتشغيل</td><td>المشترك</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
 
- <section><h2><span class="i">3</span>الكود</h2>
+ <section id="src"><h2><span class="i">3</span>الكود</h2>
+ <div class="tabs"><button class="tab on" onclick="tab(0,this)">Arduino IDE</button><button class="tab" onclick="tab(1,this)">mBlock 5</button></div>
+ <div class="pane on">
  <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/29_robotic_arm_record.ino" download>⬇ تحميل 29_robotic_arm_record.ino</a></div>
  <p><b>المكتبات المطلوبة</b> (من Arduino IDE ← Sketch ← Include Library ← Manage Libraries):</p><ul><li>EEPROM (مدمجة)</li><li>Servo (مدمجة مع Arduino IDE)</li></ul>
  <pre class="code" id="code"><span class="c">/*</span>
@@ -112,14 +115,16 @@ Servo joints[N];
   }
   <span class="f">delay</span>(<span class="n">100</span>);                                    <span class="c">// 10 إطارات في الثانية</span>
 }
-</pre></section>
+</pre></div>
+ <div class="pane"><div class="note">هذا المشروع يعتمد على مكتبات أو لوحات غير متوفرة في mBlock 5، لذلك نستعمل Arduino IDE. انسخ الكود من تبويب Arduino IDE.</div></div></section>
 
- <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>كل مقاومة متغيرة تتحكم في مفصل</li><li>زر التسجيل يحفظ الزوايا في EEPROM</li><li>زر التشغيل يعيد الحركة المسجلة</li><li>الحركات تبقى بعد فصل الكهرباء</li></ol></section>
+ <section id="how"><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>كل مقاومة متغيرة تتحكم في مفصل</li><li>زر التسجيل يحفظ الزوايا في EEPROM</li><li>زر التشغيل يعيد الحركة المسجلة</li><li>الحركات تبقى بعد فصل الكهرباء</li></ol></section>
 
  <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
  <div class="nav"><a class="btn ghost" href="../28/">→ المشروع 28</a><a class="btn ghost" href="../30/">المشروع 30 ←</a></div>
 </main>
 <div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
 <footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
-<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+<script>function tab(i,b){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.pane').forEach((p,j)=>p.classList.toggle('on',j==i))}
+function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
 </body></html>

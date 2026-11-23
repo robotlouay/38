@@ -5,25 +5,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/style.css"></head>
 <body style="--lc:#ef4444">
+<nav class="top"><div class="wrap"><a class="logo" href="../../"><b>38</b>مشروع في شهر</a><div class="links"><a href="../../#lv-b">المبتدئ</a><a href="../../#lv-m">المتوسط</a><a href="../../#lv-a">المتقدم</a><a href="../../#lv-e">المتطور</a></div></div></nav>
 <header class="hero"><div class="wrap">
- <div class="brand"><a href="../../">📘 كتاب «38 مشروع في شهر»</a><span dir="ltr">@robotlouay</span></div>
  <h1><span class="num">38</span>الطابعة ثلاثية الأبعاد المصغرة</h1>
  <div class="en">DIY Cartesian 3D Printer</div>
- <p style="margin:12px 0 0"><span class="lv">المستوى المتطور</span> &nbsp; صفحة 112 في الكتاب</p>
+ <p style="margin:14px 0 0"><span class="lv">المستوى المتطور</span><span class="pill">📖 صفحة 112 في الكتاب</span></p>
+ <div class="toc"><a href="#video">▶ الفيديو</a><a href="#parts">المكونات</a><a href="#wiring">التوصيل</a><a href="#src">الكود</a><a href="#how">كيف يعمل؟</a></div>
 </div></header>
 <main class="wrap">
- <section><h2><span class="i">▶</span>فيديو الشرح</h2>
+ <section id="video"><h2><span class="i">▶</span>فيديو الشرح</h2>
  <video controls preload="metadata" playsinline src="video.mp4"></video>
  <p style="margin:12px 0 0">طابعة ديكارتية على Arduino Mega و RAMPS 1.4: برنامج اختبار لكل الأجزاء، ثم إعدادات Marlin.</p></section>
 
- <section><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO MEGA + RAMPS 1.4<i>board</i></span><span class="chip">محرك X<i>NEMA17</i></span><span class="chip">محرك Y<i>NEMA17</i></span><span class="chip">محركا Z (على التوازي)<i>NEMA17 ×2</i></span><span class="chip">محرك البثق<i>Extruder</i></span><span class="chip">رأس الطباعة<i>Hotend</i></span><span class="chip">المنصة الساخنة<i>Heatbed</i></span><span class="chip">مفاتيح النهاية<i>Endstops</i></span><span class="chip">مزود الطاقة<i>12V 20A</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
+ <section id="parts"><h2><span class="i">1</span>المكونات</h2><div class="chips"><span class="chip">ARDUINO MEGA + RAMPS 1.4<i>board</i></span><span class="chip">محرك X<i>NEMA17</i></span><span class="chip">محرك Y<i>NEMA17</i></span><span class="chip">محركا Z (على التوازي)<i>NEMA17 ×2</i></span><span class="chip">محرك البثق<i>Extruder</i></span><span class="chip">رأس الطباعة<i>Hotend</i></span><span class="chip">المنصة الساخنة<i>Heatbed</i></span><span class="chip">مفاتيح النهاية<i>Endstops</i></span><span class="chip">مزود الطاقة<i>12V 20A</i></span><span class="chip">أسلاك توصيل<i>Jumper Wires</i></span><span class="chip">لوحة تجارب<i>Breadboard</i></span></div></section>
 
- <section><h2><span class="i">2</span>مخطط التوصيل</h2>
+ <section id="wiring"><h2><span class="i">2</span>مخطط التوصيل</h2>
  <img class="diag" src="wiring.png" alt="مخطط توصيل المشروع 38" onclick="document.getElementById('z').style.display='block'">
  <p style="color:var(--mut);font-size:14px;margin:8px 0 14px">اضغط على المخطط لتكبيره · <a href="wiring.svg" target="_blank">نسخة SVG عالية الدقة</a></p>
  <div style="overflow:auto"><table><thead><tr><th>القطعة</th><th>الطرف</th><th>يوصل إلى</th></tr></thead><tbody><tr><td>محرك X</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>X</b> <span></span></td></tr><tr><td>محرك Y</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>Y</b> <span></span></td></tr><tr><td>محركا Z (على التوازي)</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>Z</b> <span></span></td></tr><tr><td>محرك البثق</td><td>4 أسلاك</td><td><b class='pin' dir='ltr'>E0</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>السخان</td><td><b class='pin' dir='ltr'>D10</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>الثرمستور</td><td><b class='pin' dir='ltr'>T0</b> <span></span></td></tr><tr><td>رأس الطباعة</td><td>المروحة</td><td><b class='pin' dir='ltr'>D9</b> <span></span></td></tr><tr><td>المنصة الساخنة</td><td>السخان</td><td><b class='pin' dir='ltr'>D8</b> <span></span></td></tr><tr><td>المنصة الساخنة</td><td>الثرمستور</td><td><b class='pin' dir='ltr'>T1</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>X</td><td><b class='pin' dir='ltr'>X-MIN</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>Y</td><td><b class='pin' dir='ltr'>Y-MIN</b> <span></span></td></tr><tr><td>مفاتيح النهاية</td><td>Z</td><td><b class='pin' dir='ltr'>Z-MIN</b> <span></span></td></tr><tr><td>مزود الطاقة</td><td>+</td><td><b class='pin' dir='ltr'>12V</b> <span></span></td></tr><tr><td>مزود الطاقة</td><td>−</td><td><b class='pin' dir='ltr'>GND</b> <span></span></td></tr></tbody></table></div></section>
 
- <section><h2><span class="i">3</span>الكود</h2>
+ <section id="src"><h2><span class="i">3</span>الكود</h2>
+ <div class="tabs"><button class="tab on" onclick="tab(0,this)">Arduino IDE</button><button class="tab" onclick="tab(1,this)">mBlock 5</button></div>
+ <div class="pane on">
  <div class="codebar"><button class="btn" onclick="copyCode()">📋 نسخ الكود</button><a class="btn ghost" href="files/38_ramps_test.ino" download>⬇ تحميل 38_ramps_test.ino</a><a class="btn ghost" href="files/marlin_settings.txt" download>⬇ marlin_settings.txt</a></div>
  <p>لا يحتاج هذا المشروع إلى أي مكتبة إضافية.</p>
  <pre class="code" id="code"><span class="c">/*</span>
@@ -104,14 +107,16 @@ Axis axes[] = {
   }
   <span class="f">delay</span>(<span class="n">1000</span>);
 }
-</pre></section>
+</pre></div>
+ <div class="pane"><div class="note">هذا المشروع يعتمد على مكتبات أو لوحات غير متوفرة في mBlock 5، لذلك نستعمل Arduino IDE. انسخ الكود من تبويب Arduino IDE.</div></div></section>
 
- <section><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>برنامج الاختبار يحرك X و Y و Z والبثق</li><li>يقرأ حرارة الرأس والمنصة</li><li>يفحص مفاتيح النهاية والمروحة</li><li>بعدها ارفع Marlin بالإعدادات المرفقة</li></ol></section>
+ <section id="how"><h2><span class="i">4</span>كيف يعمل؟</h2><ol class="steps"><li>برنامج الاختبار يحرك X و Y و Z والبثق</li><li>يقرأ حرارة الرأس والمنصة</li><li>يفحص مفاتيح النهاية والمروحة</li><li>بعدها ارفع Marlin بالإعدادات المرفقة</li></ol></section>
 
  <div class="note">⚠ قبل توصيل الكهرباء: راجع كل سلك مع الجدول أعلاه، وتأكد من عدم وجود تماس بين 5V و GND. اختر اللوحة والمنفذ الصحيحين من قائمة Tools في Arduino IDE.</div>
  <div class="nav"><a class="btn ghost" href="../37/">→ المشروع 37</a><span></span></div>
 </main>
 <div class="zoom" id="z" onclick="this.style.display='none'"><img src="wiring.png" alt=""></div>
 <footer>كتاب «38 مشروع في شهر» — لؤي النصري · <span dir="ltr">@robotlouay</span> · <a href="https://fekralibrary.tn">fekralibrary.tn</a></footer>
-<script>function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
+<script>function tab(i,b){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.pane').forEach((p,j)=>p.classList.toggle('on',j==i))}
+function copyCode(){const t=document.getElementById('code').innerText;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='✓ تم النسخ';setTimeout(()=>b.textContent='📋 نسخ الكود',1600)})}</script>
 </body></html>
